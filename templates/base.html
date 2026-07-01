@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}{{ site.name }}{% endblock %}</title>
+  <meta name="description" content="{{ site.tagline }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="page-wrap">
+  <nav>
+    <div class="nav-inner">
+      <a href="{{ url_for('index') }}" class="nav-brand">SOC<span>·</span>PORTFOLIO</a>
+      <div class="nav-links">
+        <a href="{{ url_for('writeups') }}">Write-ups</a>
+        <a href="{{ url_for('ctf') }}">CTF</a>
+        <a href="{{ url_for('notes') }}">Notes</a>
+        <a href="{{ url_for('tools') }}">Tools</a>
+        <a href="{{ url_for('certs') }}">Certs</a>
+        <a href="{{ url_for('about') }}">About</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  <footer>
+    <span class="footer-text">{{ site.name|upper }} · BUILT WITH FLASK</span>
+    <div class="footer-links">
+      <a href="{{ site.github }}" target="_blank">GITHUB</a>
+      <a href="{{ site.linkedin }}" target="_blank">LINKEDIN</a>
+      <a href="{{ site.tryhackme }}" target="_blank">TRYHACKME</a>
+    </div>
+  </footer>
+</div>
+</body>
+</html>

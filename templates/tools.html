@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% from "_macros.html" import tags %}
+{% block title %}Tools · {{ site.name }}{% endblock %}
+{% block content %}
+<div class="section-header"><span class="section-title">// Tools & cheatsheets</span></div>
+{% if items %}
+<div class="card-grid">
+  {% for doc in items %}
+  <div class="card">
+    <div class="card-title"><a href="{{ url_for('tool_detail', slug=doc.slug) }}">{{ doc.title }}</a></div>
+    {% if doc.summary %}<div class="card-summary">{{ doc.summary }}</div>{% endif %}
+    <div class="card-meta">{{ tags(doc.tags) }}{% if doc.date %}<span class="card-date" style="margin-left:auto">{{ doc.date }}</span>{% endif %}</div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">No tool notes yet. Add markdown files to <code>tools/</code>.</div>
+{% endif %}
+{% endblock %}

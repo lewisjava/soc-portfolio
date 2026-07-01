@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Certifications · {{ site.name }}{% endblock %}
+{% block content %}
+<div class="section-header"><span class="section-title">// Certifications</span></div>
+{% if items %}
+<div class="cert-grid">
+  {% for doc in items %}
+  <div class="cert-card" style="border-top-color: {% if doc.status == 'passed' %}var(--green){% elif doc.status == 'studying' %}var(--amber){% else %}var(--text3){% endif %}">
+    <div class="cert-name">{{ doc.title }}</div>
+    {% if doc.org %}<div class="cert-org">{{ doc.org }}</div>{% endif %}
+    {% if doc.status == 'passed' %}
+      <div class="cert-status-passed">✓ Passed{% if doc.date %} · {{ doc.date }}{% endif %}</div>
+    {% elif doc.status == 'studying' %}
+      <div class="cert-status-studying">◷ Studying</div>
+    {% else %}
+      <div class="cert-status-planned">○ Planned</div>
+    {% endif %}
+    {% if doc.summary %}<div class="card-summary" style="margin-top:8px">{{ doc.summary }}</div>{% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">No certifications listed yet. Add markdown files to <code>certs/</code> with a <code>status:</code> field (passed/studying/planned).</div>
+{% endif %}
+{% endblock %}

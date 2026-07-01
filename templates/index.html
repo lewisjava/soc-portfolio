@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% from "_macros.html" import difficulty_tag, tags %}
+
+{% block content %}
+<div class="hero">
+  <span class="hero-badge">● {{ site.tagline|upper }}</span>
+  <h1>Security operations<br><span>write-ups & research</span></h1>
+  <p>A working log of my journey into blue team security — lab write-ups, CTF walkthroughs, study notes, and detection engineering as I train for a SOC analyst role.</p>
+  <div class="hero-links">
+    <a href="{{ site.github }}" target="_blank">↗ GITHUB</a>
+    <a href="{{ site.tryhackme }}" target="_blank">↗ TRYHACKME</a>
+    <a href="{{ site.linkedin }}" target="_blank">↗ LINKEDIN</a>
+    <a href="{{ url_for('about') }}">→ ABOUT ME</a>
+  </div>
+</div>
+
+<div class="stat-strip">
+  <div class="stat-card"><div class="stat-val">{{ total_writeups }}</div><div class="stat-lbl">Write-ups</div></div>
+  <div class="stat-card"><div class="stat-val">{{ total_ctf }}</div><div class="stat-lbl">CTF Solved</div></div>
+  <div class="stat-card"><div class="stat-val">{{ certs|length }}</div><div class="stat-lbl">Certifications</div></div>
+  <div class="stat-card"><div class="stat-val">∞</div><div class="stat-lbl">Always Learning</div></div>
+</div>
+
+<div class="section-header">
+  <span class="section-title">// Recent write-ups</span>
+  <a href="{{ url_for('writeups') }}" class="section-link">View all →</a>
+</div>
+{% if recent_writeups %}
+<div class="card-grid">
+  {% for doc in recent_writeups %}
+  <div class="card">
+    {% if doc.platform %}<span class="card-platform">{{ doc.platform }}</span>{% endif %}
+    <div class="card-title"><a href="{{ url_for('writeup', platform=doc.subdir, slug=doc.slug) }}">{{ doc.title }}</a></div>
+    {% if doc.summary %}<div class="card-summary">{{ doc.summary }}</div>{% endif %}
+    <div class="card-meta">
+      {{ difficulty_tag(doc.difficulty) }}
+      {{ tags(doc.tags) }}
+      {% if doc.date %}<span class="card-date" style="margin-left:auto">{{ doc.date }}</span>{% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">No write-ups yet. Add markdown files to <code>writeups/</code> to populate this section.</div>
+{% endif %}
+
+<div class="section-header">
+  <span class="section-title">// Recent CTF</span>
+  <a href="{{ url_for('ctf') }}" class="section-link">View all →</a>
+</div>
+{% if recent_ctf %}
+<div class="card-grid">
+  {% for doc in recent_ctf %}
+  <div class="card">
+    {% if doc.platform %}<span class="card-platform">{{ doc.platform }}</span>{% endif %}
+    <div class="card-title"><a href="{{ url_for('ctf_detail', slug=doc.slug) }}">{{ doc.title }}</a></div>
+    {% if doc.summary %}<div class="card-summary">{{ doc.summary }}</div>{% endif %}
+    <div class="card-meta">
+      {{ difficulty_tag(doc.difficulty) }}
+      {{ tags(doc.tags) }}
+      {% if doc.date %}<span class="card-date" style="margin-left:auto">{{ doc.date }}</span>{% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">No CTF write-ups yet. Add markdown files to <code>ctf/</code>.</div>
+{% endif %}
+{% endblock %}

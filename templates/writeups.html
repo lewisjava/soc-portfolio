@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% from "_macros.html" import difficulty_tag, tags %}
+{% block title %}Write-ups · {{ site.name }}{% endblock %}
+{% block content %}
+<div class="section-header"><span class="section-title">// Write-ups</span></div>
+{% if platforms %}
+  {% for platform_name, items in platforms.items() %}
+  <div class="platform-block">
+    <div class="platform-label">{{ platform_name }}</div>
+    <div class="card-grid">
+      {% for doc in items %}
+      <div class="card">
+        <div class="card-title"><a href="{{ url_for('writeup', platform=doc.subdir, slug=doc.slug) }}">{{ doc.title }}</a></div>
+        {% if doc.summary %}<div class="card-summary">{{ doc.summary }}</div>{% endif %}
+        <div class="card-meta">
+          {{ difficulty_tag(doc.difficulty) }}
+          {{ tags(doc.tags) }}
+          {% if doc.date %}<span class="card-date" style="margin-left:auto">{{ doc.date }}</span>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+{% else %}
+<div class="empty-state">No write-ups yet. Drop markdown files into <code>writeups/thm/</code>, <code>writeups/letsdefend/</code>, etc.</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Notes · {{ site.name }}{% endblock %}
+{% block content %}
+<div class="section-header"><span class="section-title">// Study notes</span></div>
+{% if sections %}
+  {% for section_name, data in sections.items() %}
+  <div class="notes-section">
+    <div class="notes-section-title">{{ section_name }}</div>
+    <div class="note-list">
+      {% for doc in data.docs %}
+      <div class="note-row">
+        <span class="note-row-title"><a href="{{ url_for('note', category=data.key, slug=doc.slug) }}">{{ doc.title }}</a></span>
+        {% if doc.date %}<span class="note-row-date">{{ doc.date }}</span>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+{% else %}
+<div class="empty-state">No notes yet. Add markdown files to <code>notes/networking/</code>, <code>notes/linux/</code>, etc.</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,20 @@
+{% macro difficulty_tag(diff) %}
+  {% if diff %}<span class="tag diff-{{ diff|lower }}">{{ diff|upper }}</span>{% endif %}
+{% endmacro %}
+
+{% macro tags(tag_list) %}
+  {% for tag in tag_list[:4] %}<span class="tag tag-default">{{ tag }}</span>{% endfor %}
+{% endmacro %}
+
+{% macro writeup_card(doc, platform_key) %}
+<div class="card">
+  {% if doc.platform %}<span class="card-platform">{{ doc.platform }}</span>{% endif %}
+  <div class="card-title"><a href="{{ url_for('writeup', platform=platform_key, slug=doc.slug) }}">{{ doc.title }}</a></div>
+  {% if doc.summary %}<div class="card-summary">{{ doc.summary }}</div>{% endif %}
+  <div class="card-meta">
+    {{ difficulty_tag(doc.difficulty) }}
+    {{ tags(doc.tags) }}
+    {% if doc.date %}<span class="card-date" style="margin-left:auto">{{ doc.date }}</span>{% endif %}
+  </div>
+</div>
+{% endmacro %}

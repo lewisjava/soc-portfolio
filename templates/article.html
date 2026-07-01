@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% from "_macros.html" import difficulty_tag, tags %}
+{% block title %}{{ doc.title }} · {{ site.name }}{% endblock %}
+{% block content %}
+<article>
+  <div class="article-header">
+    <a href="{{ back_url }}" class="article-back">{{ back_label }}</a>
+    <h1 class="article-title">{{ doc.title }}</h1>
+    <div class="article-meta">
+      {% if doc.platform %}<span class="tag tag-cyan">{{ doc.platform }}</span>{% endif %}
+      {{ difficulty_tag(doc.difficulty) }}
+      {{ tags(doc.tags) }}
+      {% if doc.date %}<span class="article-date" style="margin-left:auto">{{ doc.date }}</span>{% endif %}
+    </div>
+    {% if doc.summary %}<p class="article-summary">{{ doc.summary }}</p>{% endif %}
+  </div>
+  <div class="prose">{{ doc.html|safe }}</div>
+</article>
+{% endblock %}
