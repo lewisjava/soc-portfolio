@@ -29,7 +29,9 @@ Looking at the email their are several attack indicators, firstly the email is s
 Secondly the link within the email address when scanned by virustotal is shown to be a malicious link.
 Therefore after investigation the alert was classified as a true positive but does not need
 escalating as the email was blocked.
-- Third point
+
+## Feedback
+Need to improve my reporting, include the 5 W's.
 
 ---
 
@@ -38,3 +40,4 @@ escalating as the email was blocked.
 - **difficulty** — Easy
 - **date** — 2026-05-27.
 - **summary** — Introduction to phishing and triage.
+- **link** - https://tryhackme.com/soc-sim/public-summary/1da5fb6457c9957da637d0341611f99c217f6b3f0eadba6079a53f5f36a2f611de3df097d74d7a91b53d62017b6427d3
