@@ -7,21 +7,15 @@ tags: [SOC simulator]
 summary: Monitor and analyze real-time alerts
 ---
 
-# Your Title Here
+# Introduction to phishing
 
-Introduction to Phishing
+My first SOC triage
 
-## A section heading
+## Phishing emails and dodgy links.
 
 Analyze and investigate realistic phishing alerts from a SIEM
 
-
-## Code blocks
-
-
-## Tables
-
-## Lists
+## Alerts
 
 - First alert was a false positive triggered by an email containing a link that would
 Direct the user to a website, the email was from another user within the company and the link
@@ -39,13 +33,8 @@ escalating as the email was blocked.
 
 ---
 
-## Frontmatter field reference
-
-The block between the `---` lines at the top is the "frontmatter". Fields:
-
 - **title** — Introduction to Phshing
 - **platform** — TryHackme
 - **difficulty** — Easy
 - **date** — 2026-05-27.
-- **tags**
 - **summary** — Introduction to phishing and triage.
