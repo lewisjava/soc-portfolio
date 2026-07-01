@@ -9,7 +9,7 @@ summary: Walking through Windows Event Log analysis — understanding key Event 
 
 # Windows Event Logs
 
-> This is a sample write-up. Replace it with your own. Delete this file once you've added real content.
+> Windows Event logs and how to understand them
 
 ## Room overview
 
