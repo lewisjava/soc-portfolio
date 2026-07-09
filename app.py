@@ -25,6 +25,7 @@ NOTE_CATEGORIES = {
     'detection-monitoring': ('Detection & Monitoring', '#4ade80'),
     'threat-intel':         ('Threat Intelligence', '#fb923c'),
     'ir-forensics':         ('IR & Forensics', '#f472b6'),
+    'frameworks':           ('frameworks', '#c4b5fd'),
 }
 
 WRITEUP_PLATFORMS = {
