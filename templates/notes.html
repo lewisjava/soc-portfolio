@@ -1,15 +1,16 @@
 {% extends "base.html" %}
 {% block title %}Notes · {{ site.name }}{% endblock %}
 {% block content %}
-<div class="section-header"><span class="section-title">// Study notes</span></div>
+<div class="section-header" style="margin-top:0"><span class="section-title">// Study notes — by SOC domain</span></div>
 {% if sections %}
   {% for section_name, data in sections.items() %}
   <div class="notes-section">
-    <div class="notes-section-title">{{ section_name }}</div>
+    <div class="notes-section-title" style="color:{{ data.color }}">{{ section_name }}</div>
     <div class="note-list">
       {% for doc in data.docs %}
-      <div class="note-row">
+      <div class="note-row" style="border-left:2px solid {{ data.color }}">
         <span class="note-row-title"><a href="{{ url_for('note', category=data.key, slug=doc.slug) }}">{{ doc.title }}</a></span>
+        <span class="note-row-rt">{{ doc.reading_time }} min</span>
         {% if doc.date %}<span class="note-row-date">{{ doc.date }}</span>{% endif %}
       </div>
       {% endfor %}
@@ -17,6 +18,13 @@
   </div>
   {% endfor %}
 {% else %}
-<div class="empty-state">No notes yet. Add markdown files to <code>notes/networking/</code>, <code>notes/linux/</code>, etc.</div>
+<div class="empty-state">No notes yet. Add markdown files to the folders under <code>notes/</code>.</div>
 {% endif %}
+
+<div class="notes-legend">
+  <span class="section-title">Categories:</span>
+  {% for key, pair in categories.items() %}
+    <span class="tag" style="color:{{ pair[1] }};border-color:{{ pair[1] }}66;background:{{ pair[1] }}11">{{ pair[0] }}</span>
+  {% endfor %}
+</div>
 {% endblock %}

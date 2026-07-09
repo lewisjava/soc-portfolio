@@ -9,12 +9,33 @@ A clean, dark-themed portfolio site for storing SOC analyst write-ups, CTF walkt
 Every piece of content is a **markdown file** in a content folder. Drop a `.md` file into the right folder, refresh the site, and it appears. That's the whole workflow.
 
 ```
-writeups/thm/my-room.md        → appears under Write-ups → TryHackMe
-ctf/picoctf-challenge.md       → appears under CTF
-notes/linux/permissions.md     → appears under Notes → Linux & OS
-certs/security-plus.md         → appears under Certs
-tools/wireshark-filters.md     → appears under Tools
+writeups/thm/my-room.md                    → Write-ups → TryHackMe
+ctf/picoctf-challenge.md                   → CTF
+notes/detection-monitoring/edr-basics.md   → Notes → Detection & Monitoring
+certs/security-plus.md                     → Certs
+tools/spl-cheatsheet.md                    → Tools (quick-reference cheatsheets)
 ```
+
+### Note categories (domain-based)
+
+| Folder | Shows as |
+|--------|----------|
+| `notes/networking/` | Networking |
+| `notes/linux-os/` | Linux & OS |
+| `notes/windows/` | Windows |
+| `notes/security-concepts/` | Security Concepts |
+| `notes/detection-monitoring/` | Detection & Monitoring — SIEM, EDR, IDS/IPS, Sysmon |
+| `notes/threat-intel/` | Threat Intelligence |
+| `notes/ir-forensics/` | IR & Forensics |
+
+**Notes vs Tools:** Notes are things you studied and understand, organised by SOC domain. Tools is quick-reference cheatsheets you look up mid-task (command references, syntax guides). A SIEM *concept* note goes in Detection & Monitoring; an SPL *syntax cheatsheet* goes in Tools.
+
+### Built-in features
+
+- **Search** — `/search/` scans every document (titles, tags, and full text)
+- **Auto table of contents** — articles with 3+ sections get a TOC automatically
+- **Reading time** — calculated per article
+- **Escaped pipes in tables** — use `\|` inside a table cell to show a literal pipe
 
 Each file starts with a **frontmatter** block (between `---` lines) defining the title, tags, difficulty, date, and summary. See `CONTENT_TEMPLATE.md` for the full reference — copy it as a starting point for every new entry.
 

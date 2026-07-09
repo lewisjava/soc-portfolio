@@ -9,16 +9,16 @@
   <div class="hero-links">
     <a href="{{ site.github }}" target="_blank">↗ GITHUB</a>
     <a href="{{ site.tryhackme }}" target="_blank">↗ TRYHACKME</a>
-    <a href="{{ site.linkedin }}" target="_blank">↗ LINKEDIN</a>
     <a href="{{ url_for('about') }}">→ ABOUT ME</a>
   </div>
 </div>
 
 <div class="stat-strip">
   <div class="stat-card"><div class="stat-val">{{ total_writeups }}</div><div class="stat-lbl">Write-ups</div></div>
+  <div class="stat-card"><div class="stat-val">{{ notes_count }}</div><div class="stat-lbl">Notes</div></div>
+  <div class="stat-card"><div class="stat-val">{{ tools_count }}</div><div class="stat-lbl">Cheatsheets</div></div>
   <div class="stat-card"><div class="stat-val">{{ total_ctf }}</div><div class="stat-lbl">CTF Solved</div></div>
   <div class="stat-card"><div class="stat-val">{{ certs|length }}</div><div class="stat-lbl">Certifications</div></div>
-  <div class="stat-card"><div class="stat-val">∞</div><div class="stat-lbl">Always Learning</div></div>
 </div>
 
 <div class="section-header">
@@ -41,7 +41,26 @@
   {% endfor %}
 </div>
 {% else %}
-<div class="empty-state">No write-ups yet. Add markdown files to <code>writeups/</code> to populate this section.</div>
+<div class="empty-state">No write-ups yet. Add markdown files to <code>writeups/</code>.</div>
+{% endif %}
+
+<div class="section-header">
+  <span class="section-title">// Latest notes</span>
+  <a href="{{ url_for('notes') }}" class="section-link">View all →</a>
+</div>
+{% if recent_notes %}
+<div class="note-list">
+  {% for doc in recent_notes %}
+  <div class="note-row">
+    <span class="tag tag-default">{{ doc.cat_label }}</span>
+    <span class="note-row-title"><a href="{{ url_for('note', category=doc.cat_key, slug=doc.slug) }}">{{ doc.title }}</a></span>
+    <span class="note-row-rt">{{ doc.reading_time }} min</span>
+    {% if doc.date %}<span class="note-row-date">{{ doc.date }}</span>{% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">No notes yet. Add markdown files under <code>notes/</code>.</div>
 {% endif %}
 
 <div class="section-header">

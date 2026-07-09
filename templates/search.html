@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Search · {{ site.name }}{% endblock %}
+{% block content %}
+<div class="section-header" style="margin-top:0"><span class="section-title">// Search</span></div>
+
+<form action="{{ url_for('search') }}" method="get" class="search-page-form">
+  <input type="search" name="q" value="{{ q }}" placeholder="Search write-ups, notes, tools…" autofocus>
+  <button type="submit">Search</button>
+</form>
+
+{% if q and results %}
+  <p class="search-meta">{{ results|length }} result{{ 's' if results|length != 1 }} for “{{ q }}”</p>
+  <div class="search-results">
+    {% for doc in results %}
+    <a class="search-result" href="{{ doc.url }}">
+      <span class="sr-kind">{{ doc.kind }}</span>
+      <span class="sr-title">{{ doc.title }}</span>
+      {% if doc.snippet %}<span class="sr-snippet">{{ doc.snippet }}</span>{% endif %}
+    </a>
+    {% endfor %}
+  </div>
+{% elif q %}
+  <div class="empty-state">No results for “{{ q }}”. Try a different term.</div>
+{% else %}
+  <div class="empty-state">Search across all write-ups, CTF solutions, notes, and cheatsheets.</div>
+{% endif %}
+{% endblock %}

@@ -22,6 +22,9 @@
         <a href="{{ url_for('certs') }}">Certs</a>
         <a href="{{ url_for('about') }}">About</a>
       </div>
+      <form class="nav-search" action="{{ url_for('search') }}" method="get">
+        <input type="search" name="q" placeholder="Search…" value="{{ request.args.get('q','') }}" aria-label="Search the site">
+      </form>
     </div>
   </nav>
 
@@ -35,7 +38,6 @@
     <span class="footer-text">{{ site.name|upper }} · BUILT WITH FLASK</span>
     <div class="footer-links">
       <a href="{{ site.github }}" target="_blank">GITHUB</a>
-      <a href="{{ site.linkedin }}" target="_blank">LINKEDIN</a>
       <a href="{{ site.tryhackme }}" target="_blank">TRYHACKME</a>
     </div>
   </footer>

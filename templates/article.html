@@ -10,10 +10,18 @@
       {% if doc.platform %}<span class="tag tag-cyan">{{ doc.platform }}</span>{% endif %}
       {{ difficulty_tag(doc.difficulty) }}
       {{ tags(doc.tags) }}
-      {% if doc.date %}<span class="article-date" style="margin-left:auto">{{ doc.date }}</span>{% endif %}
+      <span class="article-date" style="margin-left:auto">{{ doc.reading_time }} min read{% if doc.date %} · {{ doc.date }}{% endif %}</span>
     </div>
     {% if doc.summary %}<p class="article-summary">{{ doc.summary }}</p>{% endif %}
   </div>
+
+  {% if doc.toc %}
+  <div class="toc">
+    <div class="toc-title">On this page</div>
+    {% for h in doc.toc %}<a href="#{{ h.slug }}">{{ h.text }}</a>{% endfor %}
+  </div>
+  {% endif %}
+
   <div class="prose">{{ doc.html|safe }}</div>
 </article>
 {% endblock %}

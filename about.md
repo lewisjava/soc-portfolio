@@ -10,7 +10,7 @@ I'm transitioning into cybersecurity with a focus on becoming a **Tier 1 SOC Ana
 
 - **Write-ups** — Detailed walkthroughs of TryHackMe rooms, LetsDefend investigations, and Blue Team Labs challenges
 - **CTF** — Capture-the-flag solutions with my full thought process
-- **Notes** — Reference notes on networking, Linux, Windows, security concepts, SIEM, and threat intelligence
+- **Notes** — Study notes organised by SOC domain: networking, Linux & OS, Windows, security concepts, detection & monitoring (SIEM/EDR/IDS), threat intelligence, and IR & forensics
 - **Tools** — Cheatsheets and notes on the tools I use day to day
 
 ## My focus areas
@@ -25,4 +25,4 @@ I'm building skills in: SIEM (Splunk, Microsoft Sentinel), log analysis, inciden
 
 ## Get in touch
 
-Find me on [GitHub](https://github.com/YOUR_USERNAME), [LinkedIn](https://linkedin.com/in/YOUR_USERNAME), or [TryHackMe](https://tryhackme.com/p/YOUR_USERNAME).
+Find me on [GitHub](https://github.com/LewisJava), [LinkedIn](https://linkedin.com/in/LewisJava), or [TryHackMe](https://tryhackme.com/p/LewisJava).

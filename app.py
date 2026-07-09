@@ -1,7 +1,6 @@
 import os
 import re
-from datetime import datetime
-from flask import Flask, render_template, abort, url_for
+from flask import Flask, render_template, abort, url_for, request
 from pathlib import Path
 
 app = Flask(__name__)
@@ -10,20 +9,39 @@ app = Flask(__name__)
 SITE = {
     'name': 'SOC Portfolio',
     'tagline': 'Tier 1 SOC Analyst in Training',
-    'github': 'https://github.com/YOUR_USERNAME/soc-portfolio',
-    'linkedin': 'https://linkedin.com/in/YOUR_USERNAME',
-    'tryhackme': 'https://tryhackme.com/p/YOUR_USERNAME',
-    'email': 'your@email.com',
+    'github': 'https://github.com/LewisJava',
+    'tryhackme': 'https://tryhackme.com/p/LewisJava',
+    'email': 'lewis2101@proton.me',
 }
 
 CONTENT_ROOT = Path(__file__).parent
 
+# Domain-based note categories. Key = folder under notes/, value = (label, accent colour)
+NOTE_CATEGORIES = {
+    'networking':           ('Networking', '#22d3ee'),
+    'linux-os':             ('Linux & OS', '#a78bfa'),
+    'windows':              ('Windows', '#60a5fa'),
+    'security-concepts':    ('Security Concepts', '#fbbf24'),
+    'detection-monitoring': ('Detection & Monitoring', '#4ade80'),
+    'threat-intel':         ('Threat Intelligence', '#fb923c'),
+    'ir-forensics':         ('IR & Forensics', '#f472b6'),
+}
+
+WRITEUP_PLATFORMS = {
+    'thm': 'TryHackMe',
+    'letsdefend': 'LetsDefend',
+    'blueteamlabs': 'Blue Team Labs',
+    'home-lab': 'Home Lab',
+}
+
+PIPE_TOKEN = '\x00PIPE\x00'
+
 # ── MARKDOWN PARSER ───────────────────────────────────────────────────────────
 def parse_markdown(text):
-    """Minimal markdown → HTML. Handles headings, bold, italic,
-    code blocks, inline code, links, lists, blockquotes, horizontal rules."""
+    """Minimal markdown -> HTML. Headings, bold, italic, code blocks, inline
+    code, links, images, lists, blockquotes, tables (with \\| escaping),
+    horizontal rules, ==highlights==."""
 
-    # Fenced code blocks
     def replace_code_block(m):
         lang = m.group(1) or ''
         code = m.group(2).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
@@ -39,19 +57,17 @@ def parse_markdown(text):
     while i < len(lines):
         line = lines[i]
 
-        # Table detection: current line has pipes, next line is a separator
+        # Table: header row with pipes followed by a separator row
         if '|' in line and i + 1 < len(lines) and re.match(r'^\s*\|?[\s:|-]+\|[\s:|-]*$', lines[i+1]) and '-' in lines[i+1]:
             if in_list: html.append('</ul>'); in_list = False
-            header_cells = [c.strip() for c in line.strip().strip('|').split('|')]
             html.append('<table><thead><tr>')
-            for cell in header_cells:
+            for cell in split_table_row(line):
                 html.append(f'<th>{inline(cell)}</th>')
             html.append('</tr></thead><tbody>')
-            i += 2  # skip header and separator
+            i += 2
             while i < len(lines) and '|' in lines[i] and lines[i].strip():
-                row_cells = [c.strip() for c in lines[i].strip().strip('|').split('|')]
                 html.append('<tr>')
-                for cell in row_cells:
+                for cell in split_table_row(lines[i]):
                     html.append(f'<td>{inline(cell)}</td>')
                 html.append('</tr>')
                 i += 1
@@ -81,7 +97,7 @@ def parse_markdown(text):
             if in_list: html.append('</ul>'); in_list = False
             level = len(m.group(1))
             content = inline(m.group(2))
-            slug = re.sub(r'[^\w\s-]', '', m.group(2).lower()).strip().replace(' ', '-')
+            slug = heading_slug(m.group(2))
             html.append(f'<h{level} id="{slug}">{content}</h{level}>')
             i += 1; continue
 
@@ -115,29 +131,45 @@ def parse_markdown(text):
     return '\n'.join(html)
 
 
+def split_table_row(line):
+    """Split a table row on unescaped pipes. \\| inside a cell is preserved."""
+    protected = line.replace('\\|', PIPE_TOKEN)
+    cells = [c.strip() for c in protected.strip().strip('|').split('|')]
+    return [c.replace(PIPE_TOKEN, '|') for c in cells]
+
+
+def heading_slug(text):
+    return re.sub(r'[^\w\s-]', '', text.lower()).strip().replace(' ', '-')
+
+
 def inline(text):
-    """Process inline markdown: bold, italic, inline code, links, images."""
-    # Inline code
     text = re.sub(r'`([^`]+)`', r'<code>\1</code>', text)
-    # Bold
     text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
     text = re.sub(r'__(.+?)__', r'<strong>\1</strong>', text)
-    # Italic
     text = re.sub(r'\*(.+?)\*', r'<em>\1</em>', text)
     text = re.sub(r'_(.+?)_', r'<em>\1</em>', text)
-    # Images (before links)
     text = re.sub(r'!\[([^\]]*)\]\(([^)]+)\)', r'<img src="\2" alt="\1">', text)
-    # Links
     text = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2" target="_blank" rel="noopener">\1</a>', text)
-    # Badge-style highlights: ==text==
     text = re.sub(r'==(.+?)==', r'<mark>\1</mark>', text)
     return text
 
 
-# ── FRONTMATTER ───────────────────────────────────────────────────────────────
+def extract_toc(content):
+    """Extract h2 headings for a table of contents. Only shown if 3+ headings."""
+    headings = re.findall(r'^##\s+(.*)', content, re.MULTILINE)
+    if len(headings) < 3:
+        return []
+    return [{'text': h, 'slug': heading_slug(h)} for h in headings]
+
+
+def reading_time(content):
+    words = len(re.findall(r'\w+', content))
+    return max(1, round(words / 200))
+
+
+# ── FRONTMATTER & LOADING ─────────────────────────────────────────────────────
 def parse_frontmatter(text):
-    """Extract YAML-style frontmatter between --- delimiters."""
-    meta = {'title': 'Untitled', 'date': '', 'tags': [], 'difficulty': '', 'platform': '', 'summary': ''}
+    meta = {'title': 'Untitled', 'date': '', 'tags': [], 'difficulty': '', 'platform': '', 'summary': '', 'status': '', 'org': ''}
     if not text.startswith('---'):
         return meta, text
     parts = text.split('---', 2)
@@ -159,15 +191,15 @@ def parse_frontmatter(text):
 
 
 def load_md(path):
-    """Load a markdown file, parse frontmatter and content."""
     try:
         text = path.read_text(encoding='utf-8')
         meta, content = parse_frontmatter(text)
         meta['html'] = parse_markdown(content)
         meta['slug'] = path.stem
         meta['raw'] = content
+        meta['toc'] = extract_toc(content)
+        meta['reading_time'] = reading_time(content)
         if not meta.get('title') or meta['title'] == 'Untitled':
-            # Try to infer title from first heading
             m = re.search(r'^#\s+(.+)', content, re.MULTILINE)
             if m:
                 meta['title'] = m.group(1)
@@ -177,50 +209,87 @@ def load_md(path):
 
 
 def load_section(folder, subdir=''):
-    """Load all markdown files from a section folder."""
     base = CONTENT_ROOT / folder
     if subdir:
         base = base / subdir
     if not base.exists():
         return []
     items = []
-    for f in sorted(base.glob('*.md'), reverse=True):
+    for f in base.glob('*.md'):
         doc = load_md(f)
         if doc:
             doc['section'] = folder
             doc['subdir'] = subdir
             items.append(doc)
+    items.sort(key=lambda x: x.get('date', ''), reverse=True)
     return items
+
+
+def all_documents():
+    """Every document on the site with its URL — used by search."""
+    docs = []
+    for sub in WRITEUP_PLATFORMS:
+        for d in load_section('writeups', sub):
+            d['url'] = url_for('writeup', platform=sub, slug=d['slug'])
+            d['kind'] = f"Write-up · {WRITEUP_PLATFORMS[sub]}"
+            docs.append(d)
+    for d in load_section('ctf'):
+        d['url'] = url_for('ctf_detail', slug=d['slug'])
+        d['kind'] = 'CTF'
+        docs.append(d)
+    for sub, (label, _) in NOTE_CATEGORIES.items():
+        for d in load_section('notes', sub):
+            d['url'] = url_for('note', category=sub, slug=d['slug'])
+            d['kind'] = f"Note · {label}"
+            docs.append(d)
+    for d in load_section('tools'):
+        d['url'] = url_for('tool_detail', slug=d['slug'])
+        d['kind'] = 'Tool / Cheatsheet'
+        docs.append(d)
+    return docs
 
 
 # ── ROUTES ────────────────────────────────────────────────────────────────────
 @app.route('/')
 def index():
     recent_writeups = []
-    for sub in ['thm', 'letsdefend', 'blueteamlabs', 'home-lab']:
+    for sub in WRITEUP_PLATFORMS:
         recent_writeups += load_section('writeups', sub)
     recent_writeups.sort(key=lambda x: x.get('date', ''), reverse=True)
 
+    recent_notes = []
+    for sub in NOTE_CATEGORIES:
+        for d in load_section('notes', sub):
+            d['cat_label'] = NOTE_CATEGORIES[sub][0]
+            d['cat_key'] = sub
+            recent_notes.append(d)
+    recent_notes.sort(key=lambda x: x.get('date', ''), reverse=True)
+
     recent_ctf = load_section('ctf')
     certs = load_section('certs')
+    tools_count = len(load_section('tools'))
+    notes_count = len(recent_notes)
+
     return render_template('index.html',
         site=SITE,
         recent_writeups=recent_writeups[:6],
+        recent_notes=recent_notes[:5],
         recent_ctf=recent_ctf[:4],
         certs=certs,
         total_writeups=len(recent_writeups),
         total_ctf=len(recent_ctf),
+        notes_count=notes_count,
+        tools_count=tools_count,
     )
 
 
 @app.route('/writeups/')
 def writeups():
     platforms = {}
-    labels = {'thm': 'TryHackMe', 'letsdefend': 'LetsDefend', 'blueteamlabs': 'Blue Team Labs', 'home-lab': 'Home Lab'}
-    for sub in ['thm', 'letsdefend', 'blueteamlabs', 'home-lab']:
+    for sub, label in WRITEUP_PLATFORMS.items():
         items = load_section('writeups', sub)
         if items:
-            platforms[labels.get(sub, sub)] = items
+            platforms[label] = items
     return render_template('writeups.html', site=SITE, platforms=platforms)
 
 
@@ -251,16 +320,11 @@ def ctf_detail(slug):
 @app.route('/notes/')
 def notes():
     sections = {}
-    labels = {
-        'networking': 'Networking', 'linux': 'Linux & OS',
-        'windows': 'Windows', 'security': 'Security Concepts',
-        'siem': 'SIEM & Tools', 'threat-intel': 'Threat Intel'
-    }
-    for sub in labels:
+    for sub, (label, color) in NOTE_CATEGORIES.items():
         items = load_section('notes', sub)
         if items:
-            sections[labels[sub]] = {'docs': items, 'key': sub}
-    return render_template('notes.html', site=SITE, sections=sections)
+            sections[label] = {'docs': items, 'key': sub, 'color': color}
+    return render_template('notes.html', site=SITE, sections=sections, categories=NOTE_CATEGORIES)
 
 
 @app.route('/notes/<category>/<slug>/')
@@ -293,10 +357,37 @@ def certs():
     return render_template('certs.html', site=SITE, items=items)
 
 
+@app.route('/search/')
+def search():
+    q = request.args.get('q', '').strip()
+    results = []
+    if q and len(q) >= 2:
+        q_lower = q.lower()
+        for doc in all_documents():
+            haystack = ' '.join([
+                doc.get('title', ''),
+                doc.get('summary', ''),
+                ' '.join(doc.get('tags', [])),
+                doc.get('raw', ''),
+            ]).lower()
+            if q_lower in haystack:
+                # Build a small snippet around the first match in the body
+                idx = doc.get('raw', '').lower().find(q_lower)
+                if idx >= 0:
+                    start = max(0, idx - 60)
+                    end = min(len(doc['raw']), idx + 90)
+                    snippet = ('…' if start > 0 else '') + doc['raw'][start:end].replace('\n', ' ') + ('…' if end < len(doc['raw']) else '')
+                else:
+                    snippet = doc.get('summary', '')
+                doc['snippet'] = snippet
+                results.append(doc)
+    return render_template('search.html', site=SITE, q=q, results=results)
+
+
 @app.route('/about/')
 def about():
     path = CONTENT_ROOT / 'about.md'
-    doc = load_md(path) if path.exists() else {'html': '<p>About page coming soon.</p>', 'title': 'About'}
+    doc = load_md(path) if path.exists() else {'html': '<p>About page coming soon.</p>', 'title': 'About', 'toc': [], 'reading_time': 1}
     return render_template('about.html', site=SITE, doc=doc)
 
 

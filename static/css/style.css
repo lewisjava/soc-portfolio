@@ -146,3 +146,47 @@ footer { border-top:1px solid var(--border); padding:1.25rem; display:flex; just
   .stat-strip { grid-template-columns:repeat(2,1fr); }
   .section-header { flex-direction:column; align-items:flex-start; gap:4px; }
 }
+
+/* ── SEARCH (nav + page) ─────────────────────────────────────── */
+.nav-search { display:flex; align-items:center; }
+.nav-search input {
+  background:var(--surface2); border:1px solid var(--border); border-radius:20px;
+  color:var(--text1); font-size:0.75rem; padding:5px 12px; width:130px;
+  font-family:var(--sans); outline:none; transition:all 0.15s;
+}
+.nav-search input:focus { width:180px; border-color:var(--cyan-dim); }
+.nav-search input::placeholder { color:var(--text3); }
+
+.search-page-form { display:flex; gap:8px; margin-bottom:1.5rem; }
+.search-page-form input {
+  flex:1; background:var(--surface); border:1px solid var(--border2); border-radius:var(--radius);
+  color:var(--text1); font-size:0.9rem; padding:10px 14px; font-family:var(--sans); outline:none;
+}
+.search-page-form input:focus { border-color:var(--cyan-dim); }
+.search-page-form button {
+  background:var(--cyan); color:#000; border:none; border-radius:var(--radius);
+  font-size:0.85rem; font-weight:600; padding:10px 20px; cursor:pointer; font-family:var(--sans);
+}
+.search-meta { font-family:var(--mono); font-size:0.68rem; color:var(--text3); margin-bottom:1rem; }
+.search-results { display:flex; flex-direction:column; gap:8px; }
+.search-result {
+  display:flex; flex-direction:column; gap:3px; padding:12px 14px;
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+  transition:border-color 0.15s;
+}
+.search-result:hover { border-color:var(--cyan-dim); opacity:1; }
+.sr-kind { font-family:var(--mono); font-size:0.58rem; color:var(--cyan); letter-spacing:0.08em; text-transform:uppercase; }
+.sr-title { font-size:0.92rem; font-weight:600; color:var(--text1); }
+.sr-snippet { font-size:0.78rem; color:var(--text3); line-height:1.5; }
+
+/* ── READING TIME + NOTES LEGEND ─────────────────────────────── */
+.note-row-rt { font-family:var(--mono); font-size:0.6rem; color:var(--text3); white-space:nowrap; }
+.notes-legend { margin-top:2.5rem; padding-top:1rem; border-top:1px solid var(--border); display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+.notes-legend .section-title { margin-right:4px; }
+
+@media (max-width:720px) {
+  .nav-inner { flex-wrap:wrap; height:auto; padding-top:6px; padding-bottom:6px; gap:4px; }
+  .nav-search { width:100%; padding-bottom:4px; }
+  .nav-search input { width:100%; }
+  .nav-search input:focus { width:100%; }
+}
