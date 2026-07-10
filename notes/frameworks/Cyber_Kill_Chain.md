@@ -91,7 +91,6 @@ After going through the six phases the malicious actor will attempt to take the 
 
 and much much more.
 
-> Use blockquotes for important callouts or key takeaways.
 
 ---
 

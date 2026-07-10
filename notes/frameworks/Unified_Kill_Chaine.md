@@ -118,7 +118,7 @@ After all the hunting foor access and assets the attacker will be gathering all 
 ### Exfiltration (MITRE Tactic TA0010)
 To elevate their compromise the attcker will steal the data, packaged using encryption measures and compressed to avoid detection. The C2 channeel and tunnel deployed earlier will be used here.
 
-## Impact (MITRE Tactic TA0040)
+### Impact (MITRE Tactic TA0040)
 If the attacker wanted to also compromise the integrity and the availability of the data assets then they would also manipulate, interrupt and/or destroy these assets. The goal would be maximum disruption to the business and operational processes and may involve removing account access, disk wipes and data encryption.
 
 ---
