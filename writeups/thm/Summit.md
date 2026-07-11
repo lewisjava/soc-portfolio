@@ -34,7 +34,7 @@ In this third sample we get more network activity, including DNS requests this t
 In the fourth sample in the behavioural analysis we can see under the malicious category that the executable disables windows defender real-time monitoring and downloads executable files from the internet. Under the suspicious category it also makes changes to the registry which is an artifact we can use.
 
 In the modification events it can be seen that the executable modifies a microsoft HKEY related to realtime monitoring. By adding the key effected to the rule builder we can block the actual behaviour of the malware, now the pentester has to develop new techniques used in their tools which costs a lot of time and money.
-![sample 4 - IOC Registry edited](/static/imags/sample4.png)
+![sample 4 - IOC Registry edited](/static/images/sample4.png)
 ## Fifth flag.
 The final sample simply gives logs which includes the dates, src and destination ips and ports and bytes sent for connections from the victim machine. Looking at it we can see there is a continous stream of 97 bytes to a destination which may singal that beaconing is taking place. all we have to do here is to block any ip (this prevents IP addresses work around) and any port where a size of 97 bytes leaves every 30 minutes and flag it as suspicious network behaviour. The pentester now has to develop a brand new tool and will have to train themselves on it, at this point the reward is no longer worth the effort.
 
