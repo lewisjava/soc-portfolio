@@ -42,7 +42,7 @@ The SOC for this task discovers that TCPdump has been used on of the compromised
 ![APT28 Discovery](/static/images/APT287.png)
 
 ### Lateral movement
-Since the group used TCPdump to network sniff, their next move is very predictable as we see in the task they acheive lateral movement via exploiting remote services, but which remote service should Sunny observe to ID APT activity traces. The answer to this is easy when consulting the MITRE map, where we can see the SMB/Windows Admin Shares.
+Since the group used TCPdump to network sniff, their next move is very predictable as we see in the task they acheive lateral movement via exploiting remote services, but which remote service the SOC :observe to ID APT activity traces. The answer to this is easy when consulting the MITRE map, where we can see the SMB/Windows Admin Shares.
 ![APT28 Lateral movement](/static/images/APT288.png)
 
 ### Collection
@@ -55,8 +55,8 @@ In conclusion this task demonstrates and also allowed me to develop the skills t
 
 ---
 - **Eviction - A mitre att&ck challenge**
-- **TryHackme**
+- **TryHackMe**
 - **Easy**
-- **2026/07/11**
-- **Framework, Challenge**
+- **2026-07-11**
+- **MITRE, APT28**
 - **Using the mitre att&ck framework to map an attack from a known adversary**
