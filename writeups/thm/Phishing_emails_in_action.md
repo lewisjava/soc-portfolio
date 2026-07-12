@@ -30,7 +30,7 @@ Inspecting the button reveals it is actuall a redirecting link which when used i
 |Technique used|MITRE refrence|Mitre Tactic|
 |--------------|--------------|------|
 |Email spoofing|T1684.002|Stealth
-|URL shortening|T1608.005|Stealth/Inital access|
+|URL shortening|T1608.005|Resource development|
 |Branded HTML|T1684.001|Stealth
 
 ## Email two
@@ -43,7 +43,7 @@ Looking at the screenshot above of the second example email the first thing that
 In the above screenshot the source can be inspected and the href for the tracking button can be seen as well as the src. the src is a tracking pixel, a very very small image that gets loaded into an email and will send lots of information including the recipients IP address back to the senders server and is why most email providers block images in emails.
 
 
-|Technique used|MITRE Refrence|Mitre Tactic|
+|Technique used|MITRE Refrence|MITRE Tactic|
 |--------------|--------------|------------|
 |Email spoofing|T1684.002|Stealth|
 |Pixel tracking (Phishing for information)|T1598.003|Reconnaissance|
@@ -58,7 +58,7 @@ Looking at the example email above it can be seen that the email was intially se
 ![Email 3 body](/static/images/email3body.png)
 Looking deeper into the email when the link is clicked it redirects to a landing page that mimics a leigitmate OneDrive share and interacting with the buttons on this page further redirects to a second site impersonating Adobe. If carefully inspecting these sites it becomes apparent that the URLs are suspicious and the provided directions on the page are nonsensical. However these pages act as credential harvesting portals a common technique known as web portal capture, a credential access and collection tactic used by attackers to steal information. In this example the user will attempt to login using their outlook details to use the tools however, even when entering correct details, they will be presented with a generic error message as the tool is not legit and the details they entered have now been sent to the attackers server.
 
-|Technique used|Mitre Refrence|Mitre Tactic|
+|Technique used|MITRE Refrence|MITRE Tactic|
 |--------------|--------------|------------|
 |Artifical urgency|T1566|Inital access/Reconnaissance|
 |Brand impersonation|T1684.001|Stealth|
