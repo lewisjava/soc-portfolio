@@ -37,7 +37,7 @@ With the use of viewing message source in the example screenshots above we can g
 ## Email Body
 This is where the message is contained. Emails are sent as text or formatted in HTML. HTML supports elements such as images, links and styling with most email clients showing the rendered content. An SOC analyst can also inspect the source to see how the message is structured allowing the to spot embedded elements and look for signs of phishing or malicious content.
 
-![Body HTML](/static/image/bodyhtml.png)
+![Body HTML](/static/images/bodyhtml.png)
 In the above screenshot we can see the rendered HTML (which often gets blocked as can be seen) vs the raw HTML. by viewing the raw HTML you get a look at how the elements are structured and to be able to see links, images and other embedded content.
 
 ## Types of phishing
@@ -61,7 +61,7 @@ Next are the common characteristics of phishing emails:
 - Brand impersonation: The email is designed to mimic legitimate orgs using their logos, branding, style of typing and embedding.
 - Grammar and spelling issues: The message may also contain errors, though AI has made this issue much less common.
 - Generic content: The message may lack any sort of personalization such as Dear Customer instead of your acutal name.
-- Hidden or Shortened Links: Hyperlinks may dsiguise their true destination (Example link: bit.ly/secure-login), if this were a spearphishing attempt this would fall under the mitre sub-technique T1566.002. Whe
+- Hidden or Shortened Links: Hyperlinks may dsiguise their true destination (Example link: bit.ly/secure-login), if this were a spearphishing attempt this would fall under the mitre sub-technique T1566.002.
 - Malicious Attachments: Attachments are included and disguised as legitimate files (Example file: invoice.pdf.exe) If this were a spearphishing attempt this would fall under the mitre sub-technique T1566.001.
 
 When dealing with links they should be defanged to prevent accidental clicking of them.
