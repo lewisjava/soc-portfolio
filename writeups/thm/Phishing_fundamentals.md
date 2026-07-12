@@ -52,7 +52,23 @@ Now with the understanding of the system it can be understood how attackers abus
 |Smishing|Phishing attacks conducted through SMS/text messages targeting users on mobile devices|
 |Vishing|Phishing attacks conduced through voice coils where attackers use social engineering over tthe phone|
 
-In the above table we cover the common types of phishing used which falls under the STEALTH tactic in the mitre framework and utilises the social engineering techniques (T1684) phishing (T1566). Spear phishing also conains many sub techniques such as Spearphishing voice (T1566.004). Since phishing is the primary method used for intial access accounting for 15.44% of all incidents - D3 security, 2026, It is important to understand how emails work and how attaackers abuse these systems and the techniques they use to do so.
+In the above table we cover the common types of phishing used which falls under the STEALTH tactic in the mitre framework and utilises the social engineering techniques (T1684) phishing (T1566). Spear phishing also conains many sub techniques such as Spearphishing voice (T1566.004). 
+
+Next are the common characteristics of phishing emails:
+
+- Spoofed from address: This is where the senders email is spoofed to appear as a trusted entity (noreply@microsof.com) in this example we can see the email attempts to look like an official Microsoft email but is just missing the t of the end. If someone did not proofread the email address properly and skimmed it, this might trick them.
+- Urgent subject or message: Sometimes an attacker will attempt to create a sense of urgency within the email imporing the reader to take immediate action evoking a sense of anxiety or panic that might cause the reader to not think properly and take immediate action, such an example might be "Your account will be locked unless you click this link and change your details"
+- Brand impersonation: The email is designed to mimic legitimate orgs using their logos, branding, style of typing and embedding.
+- Grammar and spelling issues: The message may also contain errors, though AI has made this issue much less common.
+- Generic content: The message may lack any sort of personalization such as Dear Customer instead of your acutal name.
+- Hidden or Shortened Links: Hyperlinks may dsiguise their true destination (Example link: bit.ly/secure-login), if this were a spearphishing attempt this would fall under the mitre sub-technique T1566.002. Whe
+- Malicious Attachments: Attachments are included and disguised as legitimate files (Example file: invoice.pdf.exe) If this were a spearphishing attempt this would fall under the mitre sub-technique T1566.001.
+
+When dealing with links they should be defanged to prevent accidental clicking of them.
+
+## Conclusion
+
+Since phishing is the primary method used for intial access accounting for 15.44% of all incidents - D3 security, 2026, It is important to understand how emails work and how attackers abuse these systems and the techniques they use to do so.
 
 
 ---
