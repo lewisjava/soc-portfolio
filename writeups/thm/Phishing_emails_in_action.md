@@ -47,7 +47,7 @@ In the above screenshot the source can be inspected and the href for the trackin
 |--------------|--------------|------------|
 |Email spoofing|T1684.002|Stealth|
 |Pixel tracking (Phishing for information)|T1598.003|Reconnaissance|
-|Link manipulation|T1566.002|Stealth/Inital access|
+|Link manipulation|T1566.002|Inital access|
 
 ## Email three
 This email is different from the other too as it is part of a phishing campaing that utilized a multi-stage redirection chain to harvest user details. It demonstrates how attackers leverage reputations of professional document-sharing services such as adobe, one drive, microsoft etc. to create a deceptive path that leads the victim to a draudulent login portal.
@@ -60,7 +60,7 @@ Looking deeper into the email when the link is clicked it redirects to a landing
 
 |Technique used|MITRE Refrence|MITRE Tactic|
 |--------------|--------------|------------|
-|Artifical urgency|T1566|Inital access/Reconnaissance|
+|Artifical urgency|T1684|Inital Stealth|
 |Brand impersonation|T1684.001|Stealth|
 |Link redirection|T1204.001|Excution|
 |Credential harvesting|T1056.003|Credential Access/Collection|
