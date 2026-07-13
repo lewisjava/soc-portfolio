@@ -56,6 +56,7 @@ When attempting to analyse attatchments it is essential this is done in an contr
 ![Virus Total](/static/images/virustotal.png). This falls under the MITRE D3FEND technique D3-FHRA file hash reputation analysis
 
 |MITRE D3FEND technique|ID|Tactic|
+|----------------------|--|------|
 |File Hash reputation analysis|D3-FHRA|Detect|
 |File Hashing|D3-FH|Detect|
 
@@ -66,6 +67,7 @@ For example one very popular tool is ANY.RUN, an interactive malware sandbox, it
 ![anyrun](/static/images/anyrun.png)
 
 |MITRE D3FEND technique|ID|Tactic|
+|----------------------|--|------|
 |Dynamic analysis|D3-DA|Detect|
 
 ## PhishTool
