@@ -60,10 +60,26 @@ Looking deeper into the email when the link is clicked it redirects to a landing
 
 |Technique used|MITRE Refrence|MITRE Tactic|
 |--------------|--------------|------------|
-|Artifical urgency|T1684|Inital Stealth|
+|Artifical urgency|T1684|Stealth|
 |Brand impersonation|T1684.001|Stealth|
 |Link redirection|T1204.001|Excution|
 |Credential harvesting|T1056.003|Credential Access/Collection|
+
+## Email four
+This email is just look the other three in the way it is claiming to be someone else, in this instance a trusted household brand that demands immediate action from the recipient. But in this email the attacker uses an attatchment instead of a link. By masquerading as an official billing notification the attacker attempts to bypass standard email filters and leverafe the victims sense of urgency.
+
+![Email 4 header](/static/images/email4header.png)
+Looking at the email header first, three things stand out. Firstly the email subject already attempts to play on the recipient sense of urgency telling them their ID was suspended. Secondly the display name, like the other emails, does not match the user and domain. Lastly the email uses rendered HTML in order to impersonate Netflix.
+
+![email 4 body](/static/images/email4body.png)
+Within the body of the email in the screenshot the recipient of the email is informed there is an issue with their billing info and because of this they must update their information in order to regain access to the account and to do this they must open the attached PDF file. However the file contains an embededded link which directs to a URL not associated with a legit netflix domain.
+
+|Technique used|MITRE Refrence|MITRE Tactic|
+|--------------|--------------|------------|
+|Spoofed Email|T1684.002|Stealth|
+|Sense of urgency|T1684|Stealth|
+|Brand impersonation|T1684.001|Stealth|
+|Attachments|T1566.001|Initial Access
 
 ---
 
