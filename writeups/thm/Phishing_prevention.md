@@ -15,7 +15,7 @@ summary: A write up of tactics and tools used in the prevention of successful ph
 ### SPF
 "Sender policy framework is sued to authenticate the sender of an email, With an SPF record in place, Internet Service Providers can verify that a mail server is authorized to send email for a specific domain, An SPF record is a DNS TCT record containing a list of the IP addresses that are allowed to send email on behalf of you domain" - Dmarcian.
 
-Essentialy the PSF framework is designed to detect the forging of sender addresses during the deliver of emails.
+Essentialy the SPF framework is designed to detect the forging of sender addresses during the deliver of emails.
 
 ![SPF](/static/images/spf.png)
 Following the worflow above when an email is sent the receiving mail server checks the domains SPF record to verify whether the sending server is authorized to send messages on behalf of that domain. based on the result there are three outcomes.
@@ -41,7 +41,7 @@ Another tool is the Google Admin ToolBox MessageHeader which allows the analysis
 ## DomainKeys Identified Mail (DKIM)
 
 ### DKIM
-DKIM is defined as "DKIM stands for DomainKeys Identified Mial and is used for the authentication of an email that's being sent. Like SPF, DKIM is an open standard for email authentication that is used for DMARC aignment. A DKIM record exists in the DNS, but it is more complex than PSF. DKIM's advantage is that it can survive forwarding, which makes it superior to SPF and a foundation for securing your email."
+DKIM is defined as "DomainKeys Identified Mial is used for the authentication of an email that's being sent. Like SPF, DKIM is an open standard for email authentication that is used for DMARC aignment. A DKIM record exists in the DNS, but it is more complex than PSF. DKIM's advantage is that it can survive forwarding, which makes it superior to SPF and a foundation for securing your email."
 
 It is essential an email security standard designed to make sure messages aren't altered in transit between the sending and recipient servers.
 
@@ -66,7 +66,7 @@ Essentialy DMARC is a technical standard that helps protect email senders and re
 
 Example DMARC record: v=DMARC1; p=quarantine; rua=mailto:postmaster@website.com
 
-- v=DMAR1 - The version of DMARC
+- v=DMARC1 - The version of DMARC
 - p=quarantine - the DMAR policy (in this instance quarantine = move to the spam folder)
 - rua=mailto:postmaster@website.com - aggregate reports will be sent to the email specified
 

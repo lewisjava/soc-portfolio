@@ -86,7 +86,7 @@ One of PhishTool's key features is it's seamless integration with VirusTotal all
 Finally PhishTool allows for formal documentation of findings that includes marking the email as malicious or not and key artifacts such as addresses, IPs and embeddeed URLs to be flagged. These get added to investigation notes and Resolved.
 
 ### Conclusion
-In conclusion Phishing analysis of emails is a rigorous that requires analysis of various elements for many different artifacts, IOCs and more. This process has been shown to be significantly streamlines by the use of various tools that should be at the disposale of any analysts due to their effeective nature that has been demonstrated clearly within this write up.
+In conclusion phishing analysis of emails is a rigorous that requires analysis of various elements for many different artifacts, IOCs and more. This process has been shown to be significantly streamlines by the use of various tools that should be at the disposale of any analysts due to their effeective nature that has been demonstrated clearly within this write up.
 
 ---
 
