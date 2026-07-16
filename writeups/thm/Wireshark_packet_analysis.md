@@ -66,7 +66,7 @@ Display filters use c-like logical operators and comparison operators
 |-------|------|-----------|
 |and|&&|logical AND|
 |not|!|logical NOT|
-|or| || | Logical OR|
+|or|"||"| Logical OR|
 |eq|==|Equal|
 |ne|!=| Not Equal|
 |gt|>|Greater than|
@@ -92,7 +92,7 @@ These filters help analyse the traffic according to the IP level information (ne
 |ip.addr == 0.0.0.0|Show all packets containing IP addresses 0.0.0.0|
 |ip.addr == 10.10.10.0/24|Shows all packets tontaining ip addresses from 10.10.10.0/24 subnet|
 |ip.src == 0.0.0.0|Shows all packets from 0.0.0.0|
-|ip.dst == 0.0.0.0|Shows all packets from 0.0.0.0|
+|ip.dst == 0.0.0.0|Shows all packets to 0.0.0.0|
 
 ### TCP and UDP filters
 filters packets according to protcol level information (transport layer of the OSI model). Shows information such as source and destination ports, sequence number, acknowledgment number, windows size, timestamps, flags, length and protocol errors.
@@ -124,7 +124,7 @@ Wire shark also comes with a built in option that stores all supported protocol 
 |Filter|Description|Example|
 |------|-----------|-------|
 |Contains|Search a value inside packets. simialr to the Find option by focusing on a specific field|http.server contains "Apache"|
-|matches|Search a pattern of a regular expression|http.host matches "\.(php|html)" lists all HTTP pacets where packets "host" fields match keywords .php or .html|
+|matches|Search a pattern of a regular expression|http.host matches "\.(php'|'html)" lists all HTTP pacets where packets "host" fields match keywords .php or .html|
 |in|Search a value or field inside of a specific scope/range|tcp.port in {80 443 8080}. list al TCP packets where packets "port" fields have values 80, 443 or 8080|
 |upper|Convert a string value to uppercase|upper(http.server)contains "APACHE". Converts all HTTP packets "server" fields to uppcase and lists packets that contains the APACHE keyword|
 |lower|Convert a string value to a lowercase|lower(http.server) contains "apache". Converts all HTTP packets "server" fields info to lowercase and list packets that contains "apache".|
