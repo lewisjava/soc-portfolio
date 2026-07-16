@@ -96,7 +96,7 @@ One of the HTTP POST requests was named comment.php and showed up in my previous
 ## Identifying hosts: DHCP,NetBIOS and Kerberos
 When investigating a compromise or malware IDing hosts on the network beyong IP and MAC address is kessential.
 
-### DNS
+### DHCP
 |wiresharkfilter|Description|
 |---------------|-----------|
 |dhcp|global search|
@@ -112,7 +112,7 @@ The tech responsible for allowing applications on different hosts to communicate
 |Wireshark filter|description|
 |----------------|-----------|
 |nbns|Global search|
-|nbns.name contains "keyword" : such as "name", "ttl" and "ip address details"|
+|nbns.name contains "keyword" : such as "name", "ttl" and "ip address details"|nbns options|
 
 ### Kerberos
 The default authentication service for Microsoft windows domains.
