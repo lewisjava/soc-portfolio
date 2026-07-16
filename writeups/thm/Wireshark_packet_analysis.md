@@ -1,3 +1,5 @@
+---
+title: Wireshark - Packet Analysis
 platform: TryHackMe
 difficulty: easy
 date: 2026-07-16
@@ -134,8 +136,8 @@ Since there is many filter options and combinations wireshark comes with a bookm
 ---
 
 - **Wireshark - Packet analysis**
-- **TryHackMe**
+- **TryHackme**
 - **Easy**
-- **2026/07/16**
-- **Wireshark, Tools, Network analysis**
-- **A write up of the features and filters of wireshark for packet analysis** 
+- **2026-07-16**
+- **Network Analysis, wireshark, tools**
+- **A walkthrough of using wiresahrk for packet analysis**
