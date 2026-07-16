@@ -26,17 +26,17 @@ TCP filters
 |tcp.flags == 16|Only ACK flag|
 |tcp.flags.ack == 1|ACK flag set, rest of bits not important|
 |tcp.flags == 18|Only SYN, ACK flags|
-|'(tcp.flags.syn == 1) and (tcp.flags.ack == 1)'|SYN and ACK are set, rest of the bits not important|
+|`(tcp.flags.syn == 1) and (tcp.flags.ack == 1)`|SYN and ACK are set, rest of the bits not important|
 |tcp.flags == 4|Only RST flag|
 |tcp.flags.reset == 1|RST flag set, rest of the bits not important|
 tcp.flags == 20|Only RST and ACK flags|
-|'(tcp.flags.reset == 1) and (tcp.flags.ack == 1)'|RST and ACK are set, rest of the bits not important|
+|`(tcp.flags.reset == 1) and (tcp.flags.ack == 1)`|RST and ACK are set, rest of the bits not important|
 |tcp.flags == 1|Only FIN flag is set|
 |tcp.flags.fin == 1|FIN flag is set, rest of the bits not important|
 
-'tcp.flags.syn==1 and tcp.flags.ack==0' and tcp.window_size > 1024 - TCP connect scan display filter
-'tcp.flags.syn==1 and tcp.flags.ack==0' and tcp.window_size <= 1024 - TCP SYN scan display filter
-'icmp.type==3 and icmp.code==3' - UDP scan patterns display filter
+`tcp.flags.syn==1 and tcp.flags.ack==0` and tcp.window_size > 1024 - TCP connect scan display filter
+`tcp.flags.syn==1 and tcp.flags.ack==0` and tcp.window_size <= 1024 - TCP SYN scan display filter
+`icmp.type==3 and icmp.code==3` - UDP scan patterns display filter
 ### Exercise
 **What is the total number of the TCP connect scans?**
 The first challenge simply asks for the amount of packets that are TCP connect scans, using the aforementioned TCP connect scan display filter should give the answer
@@ -67,7 +67,7 @@ ARP poisoning/Adversary in the middle (T1557.002) is an attack that allows attac
 |arp.opcode == 2|ARP responses|
 |arp.dst.hw_mac==00:00:00:00:00:00|ARP scanning|
 |arp.duplicate-address-detected or arp.duplicate-address-frame|Possible ARP poisoning detection|
-|'((arp)) && (arp.opcode == 1)) && (arp.src.hw_mac == target-mac-address)'|Possible ARP flooding from detection|
+|`((arp)) && (arp.opcode == 1)) && (arp.src.hw_mac == target-mac-address)`|Possible ARP flooding from detection|
 
 A suspicious situations means having two different ARP responses conflict for a particular IP address which will then be flagged by wireshark, figuring out which of thw two is legit and which isn't is the analysts job.
 
