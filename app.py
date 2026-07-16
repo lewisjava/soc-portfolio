@@ -142,9 +142,15 @@ def split_table_row(line):
 def heading_slug(text):
     return re.sub(r'[^\w\s-]', '', text.lower()).strip().replace(' ', '-')
 
-
 def inline(text):
-    text = re.sub(r'`([^`]+)`', r'<code>\1</code>', text)
+    # Protect inline code spans from bold/italic/highlight/link processing
+    # by extracting them first and restoring untouched at the very end.
+    code_spans = []
+    def stash_code(m):
+        code_spans.append(m.group(1))
+        return f'\x00CODE{len(code_spans) - 1}\x00'
+    text = re.sub(r'`([^`]+)`', stash_code, text)
+
     text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
     text = re.sub(r'__(.+?)__', r'<strong>\1</strong>', text)
     text = re.sub(r'\*(.+?)\*', r'<em>\1</em>', text)
@@ -152,8 +158,13 @@ def inline(text):
     text = re.sub(r'!\[([^\]]*)\]\(([^)]+)\)', r'<img src="\2" alt="\1">', text)
     text = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2" target="_blank" rel="noopener">\1</a>', text)
     text = re.sub(r'==(.+?)==', r'<mark>\1</mark>', text)
-    return text
 
+    def restore_code(m):
+        idx = int(m.group(1))
+        code = code_spans[idx].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+        return f'<code>{code}</code>'
+    text = re.sub(r'\x00CODE(\d+)\x00', restore_code, text)
+    return text
 
 def extract_toc(content):
     """Extract h2 headings for a table of contents. Only shown if 3+ headings."""
