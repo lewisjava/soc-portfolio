@@ -148,17 +148,171 @@ Simply using the display filter kerberos.CNameString contains "u5" gives us the 
 By applying the cname as a column all the kerberos packets will also have their appropriate hostnames next to them and this makes it very easy to find.
 ![Kerberos](/static/images/kerberos.png)
 
+## DNS and ICMP
+Traffic tunnerling/port forwarding is transferring data through scure tunnels that provide anonymity and traffic security making it highly valuable in orgs, but this same data encryption allows attackers to bypass security using the standad protocols like ICMP and DNS
+
+### ICMP
+ICMP anomalies usually occur after a malware execution or vulnerability execution as ICMP packets can transfer an addiotional data payload meaning attackers use this section to exfil data and establish C2 connections. IOC's usually include large volumes of ICMP traffic or anomalous packet sizes.
+
+|Wireshark filter|Description|
+|----------------|-----------|
+|icmp|Global search|
+|data.len > 64 and icmp|Searches for ICMP packets with a packet length greater than 64|
+
+### DNS
+Usually used to translate and convert IP domains to IP addresses attackers exploit this protocol for data exfil and C2 activites since it is commonly used and trusted it gets ignored by security protocols. Like ICMP, DNS anomalies occur post malware execution where the DNS queries to a C2 server. These queries tend to be longer than default DNS queries and contain commands instead of subdomain addresses.
+
+|Wireshark filter|Description|
+|dns|global search|
+|dns contains "dnscat"| used to search for anomalous and non regular names in DNS addresses or subdomain addresses|
+|dns.qry.name.len > 15 and !mdns|Used to search for DNS queries longer than default length|
+!mdns disables local link device queries
+
+### Exercises
+**Which protocol is sued in ICMP tunnelling**
+Using the aforementiond filter managd to narrow down to the anomalous packets however finding out what protocol they were using required me to follow Chris Greers youtube tutorial which taught reading packet payloads, and within packet 42 there is "enSSH" suggesting the attacker is using ICMP to exfil data, further along more ICMP packets contain the diffie hellman exchange to suggesting established connection.
+![ssh](/static/images/ssh.png)
+
+**What is the suspicious main domain address that receives anomalous DNS queries**
+By adding the aforementioned display filter and then adding names to the column it only takes a quic search across the packets to come across a long truncated name that also contains "dataexfil" making it the suspicious domain address
+![dataexfil](/static/images/dataexfil.png)
+
+
+## FTP
+|wireshark filter|Description|
+|----------------|-----------|
+|ftp|global search|
+|ftp.response.code == 211|system status|
+|ftp.response.code == 212|Directory status|
+|ftp.response.code == 213|File status|
+|ftp.response.code == 220|Service ready|
+|ftp.response.code == 227|Entering passive mode|
+|ftp.response.code == 228|Long passive mode|
+|ftp.response.code == 230|User login|
+|ftp.response.code == 231|User logout|
+|ftp.response.code == 331|Valid username|
+|ftp.response.code == 430|Invalid username or pass|
+|ftp.response.code == 530|No login, invalid password|
+|ftp.request.command == USER|username|
+|ftp.request.command == "PASS"|Password|
+|ftp.request.arg == "password"|Password|
+|ftp.response.code == 530|Bruteforce search|
+|ftp.response.code == 530 and gtp.response.arg contains "username"|Bruteforce signal|
+|ftp.request.command == "PASS" and ftp.request.arg == "password"|password spray signal"
+
+### Exercises
+**how many incorrect login attempts are there**
+this simply requires looking at the response code 530 which is the response to incorrec login attempts which returns 737 packets
+![530](/static/images/530.png)
+
+**What is the size of the file accessed by the "ftp"account**
+Using the response code 213 and looking at the arg gives us the size of the file accessed which is 39424
+![213](/static/images/213.png)
+
+**the adversary uploaded a document to the ftp server what is the filename**
+simply filtering for ftp and looking through the info section finds the name resume.doc pretty quickly.
+![ftp](/static/images/ftp.png)
+
+**the adversary tried to assign special flags to change the executing permissions what are they**
+Executing permissions involves the chmod command and if you know you're looking for this it makes it easy to find and the perms have been set using CHMOD 777
+![chmod](/static/images/chmod.png)
+
+## HTTP
+As a result of being the backbone of web traffic and unencrypted it's a must to know in network traffic analysis and is often used in the following attacks:
+- Phishing pages (T1566)
+- Web attacks (T1190)
+- Data exfil (TA0010)
+- C2 (TA0011)
+
+|wireshark filter|Description|
+|----------------|-----------|
+|http and http2|Global search for either http or http2|
+|http.reqeuest.method == "GET"/"POST"|search for either http get or post requests
+|http.response.code == 200/301/302/etc.|Search for the http response codes|
+|http.user_agent contains "nmap|Searches for the browser and operating system id to a web server app|
+|http.request.uri contains "admin"|Points the requested resource from the server|
+|http.request.uri contains "admin"|complete URI information|
+|http.server contains "apache"|Server service name|
+|http.host contains "keyword"|searches for the hostname of the server|
+|http.host == "keyword"|Searched for the hostname|
+|http.connection == "Keep-Alive"|Connection status|
+|data-text-lines contains "keyword"|Searches cleartext data provided by the server|
+
+The user-agent field specifically is great place for spotting anomalies in traffic so certain things may stand out in this field:
+- Different user agent info from the same host in a short time notice
+- Non-standard and custom user agent info
+- Masquerading names such as Mozlilla for Mozilla
+- Audit tools such as nmap,nikto,wfuzz and sqlmap in the user agent field: Bookmarked display filter for this (http.user_agent contains "sqlmap") or (http.user_agent contains "Nmap") or (http.user_agent contains "Wfuzz") or (http.user_agent contains "Nikto")
+- Payload data in the user agent field
+
+Investigations start with prior research on threats and anomalies that are going to be hunted one of the exercises requires investigating the log4j vulnerability, this attack starts with a POST requests and contains cleartext patterns "jndi:ldap" and Exploit.class".
+
+|Wireshark filter|Description|
+|----------------|-----------|
+|http.request.method == "POST"|Will search for the attack start in log4j|
+|(ip contains "jndi") or ( ip contains "Exploit") or (frame contains "jndi") or ( frame contains "Exploit") or (http.user_agent contains "$") or (http.user_agent contains "==")|Searches for the known cleartext patterns|
+
+### Exercises
+**Investiagte the user agents. What is the number of anomalous user-agent types**
+By adding user agents into the column field this makes it very easy to tally up the how many user agent types there are of which there are 6.
+![useragent](/static/images/useragent.png)
+
+**what is the packet number with a subtle spelling difference in the user agent field**
+since the user-agent was added to the column this makes it easy to see which has the subtle spelling difference as it stands out when compared to the legitimate user agent it is trying to imitate. Mozlila vs Mozilla
+![mozilla](/static/images/mozilla.png)
+
+**locate the Log4j attack starting phase what is the packet number?**
+using the http.request.method == "POST" alongside having user-agent in the column filter and loking for the jndi:ldap user agent allowed me to find this packet pretty quickly and it is number 444
+![log4j](/static/images/log4j.png)
+
+**Locate the starting attack and decode the base64 command, what is the ip address contacted by the adversary**
+Looking inside the starting point POST command we can see the base64 code
+![useragentbase64](/static/images/useragentbase64.png)
+Adding this into cyberchef we can decode it and get the ip address for the answer which is 62[.]210[.]130[.]250
+![cyberchef](/static/images/cyberchef.png)
+
+## HTTPS
+The encrypted version of HTTP so requires the encryption/decryption key pairs in the form of an encryption log file to read.
+
+|Wireshark filter|description|
+|----------------|-----------|
+|http.request|lists all requests|
+|tls|global tls search|
+|tls.handshake.type == 1|TLS client request|
+|tls.handshake.type == 2|TLS Server response|
+|ssdp|Local simple service disvoery protocol|
+
+HTTPS also has it's own version of the tcp-three way handshake, the first two steps are in order "Client hello", "Server hello".
+
+- Client Hello: (http.request or tls.handshake.type == 1) and !(ssdp) 
+- Server Hello: (http.request or tls.handshake.type == 2) and !(ssdp)
+### Exercise
+**What is the frame number of the client hello message sent to accounts.google.com**
+This one was done by using the tls.handshake.type == 1 and adding the server name field found within the first packet to the display filter field and adjusting the name to search for the account I am after.
+![servername](/static/images/servername.png)
+
+**Decrypt the traffic with the Keylogsfile.txt file. what is the number of HTTP2 packets**
+adding the file to the master pre-shared option within the tls prefrences decrypts the traffic and simply applying the http2 display filter will return the amount of packets
+![tls](/static/images/tls.png)
+
+**go to frame 322. what is the authority header of the HTTP2 packet**
+this is found within the 322 packet
+![http2](/static/images/http2.png)
+
+**Investigate the decrypted packets and find the flag**
+By using export to objects and exporting to http we get the flag FLAG{THM-PACKETMASTER}
+![packetmaster](/static/images/packetmaster.png)
+
+## Conclusion
+In conclusion this room covered how to detect anomalies and investigate events of interest at the packet level across various protocols.
+
 ---
 
-## Frontmatter field reference
-
-The block between the `---` lines at the top is the "frontmatter". Fields:
-
-- **title** — required. The display title.
-- **platform** — optional. Shows as a badge (e.g. TryHackMe, LetsDefend).
-- **difficulty** — optional. One of: easy, medium, hard. Shows as a coloured tag.
-- **date** — optional but recommended. Format YYYY-MM-DD. Used for sorting.
-- **tags** — optional. Comma-separated list in square brackets.
-- **summary** — optional. One-sentence description shown on cards.
+- **Wireshark - Traffic analysis** — required. The display title.
+- **TryHackme** — optional. Shows as a badge (e.g. TryHackMe, LetsDefend).
+- **Medium** — optional. One of: easy, medium, hard. Shows as a coloured tag.
+- **2026-07-17** — optional but recommended. Format YYYY-MM-DD. Used for sorting.
+- **Wireshark, Network analysis** — optional. Comma-separated list in square brackets.
+- **Using wireshark to detect anomalies and investigate events of interest** — optional. One-sentence description shown on cards.
 
 For **certs**, use `status: passed` / `studying` / `planned` and `org: CompTIA` instead of platform/difficulty.
