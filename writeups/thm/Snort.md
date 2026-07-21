@@ -177,6 +177,7 @@ Same procedure as the last two but with a different rule
 ## Conclusion
 In conclusion Snort is an incredibly versatile tool capable of operating as a sniffer, IPS/IDS and more. In this writeup I demonstrate the basic fundamentals of the tool as well as the capability of writing local.rules and using them against pcap files and reading the outputs to gather data.
 
+
 ---
 
 - **Snort**
