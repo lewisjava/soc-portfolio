@@ -25,31 +25,36 @@ Alert Details:
 Your job is to investigate this activity and decide whether it should be considered suspicious.
 
 1. Investigate target host and source IP:
+```
 index="-nuxalert" sourcetype="linux_secure" 10.10.242.248 
 | search "Accepted password for" OR "Failed password for" OR "Invalid user"
 | sort + _time
-
+```
 this query will search for both successful and failed login attempts as well as events related to invalid users, which are commonly observed wen an attacer is attempting to enumerate accounts before starting a brute force attacks on a specific user.
 ![splunk1](/static/images/splunk1.png)
 
 this query brings back results that show this IP is clearly enumerating users to target for a brute force attack as there are several login attempts for non-existent users.
 
 2. Run another search to see the number of login attempts made for each user:
+```
 index="linux-alert" sourcetype="linux_secure" 10.10.242.248
-| rex field=\_raw "^\d{4}-\d{2}-\d{2}T[^\s]+\s+(?\<log_hostname>\S+)"
-| rex field=\_raw "sshd\[\d+\]:\s\*(?<action>Failed|Accepted)\s+\S+\s+for(?: invalid user)? (?<username>\S+) from (?\<src_ip>\d{1,3}(?:\.\d{1,3}){3})"
+| rex field=_raw "^\d{4}-\d{2}-\d{2}T[^\s]+\s+(?\<log_hostname>\S+)"
+| rex field=_raw "sshd\[\d+\]:\s*(?<action>Failed|Accepted)\s+\S+\s+for(?: invalid user)? (?<username>\S+) from (?\<src_ip>\d{1,3}(?:\.\d{1,3}){3})"
 | eval process=sshd""
 | stats count values(src_ip) as src_ip values(log_hostname) as hostname values(process) as process by username
+```
 ![splunk2](/static/images/splunk2.png)
 
 This query shows that a staggering 503 attempts were made against john.smith which shows the brute force took place against this user once a legitimate user was found during enumeration.
 
 3. Find out if the brute for was successful:
+```
 index="-alert" sourcetype="linux_secure" 10.10.242.248
-| rex field=\_raw "^\d{4}-\d{2}-\d{2}T[^\s]+\s+(?<log_hostname>\S+)"
-| rex field=\_raw "sshd\[\d+\]:\s\*(?<action>Failed|Accepted)\s+\S+\s+for(?: invalid user)? (?<username>\S+) from (?<src_ip>\d{1,3}(?:\.\d{1,3}){3})"
+| rex field=_raw "^\d{4}-\d{2}-\d{2}T[^\s]+\s+(?<log_hostname>\S+)"
+| rex field=_raw "sshd\[\d+\]:\s*(?<action>Failed|Accepted)\s+\S+\s+for(?: invalid user)? (?<username>\S+) from (?<src_ip>\d{1,3}(?:\.\d{1,3}){3})"
 | eval process="sshd"
 | stats count values(action) values(src_ip) as src_ip values(log_hostname) as hostname values(process) as process  by username
+```
 ![splunk3](/static/images/splunk3.png)
 
 As can be seen by the query result there was a successful login.
@@ -97,8 +102,10 @@ Your job is to investigate this activity and decide whether it should be conside
 1. Focus on Host and user: What kind of host is it? workstation or server? check the Asset inventoryServers often use prefixes like SRV, WEB, MSQL. In this case it's a workstation. Next check user and if the activity fits their role, HR creating tasks is not normal but for IT staff it would be. checking user location and working hours to see if it fits is also a good first step. In this scenario the user is a System engineer.
 
 2. Query the logs:
+```
 index="win-alert" EventCode=4698 AssessmentTaskOne
 | table _time EventCode user_name host Task_Name Message
+```
 
 Looking at the task create shows a task that will run every day and wants to run a powershell executabel that uses certutilto download rv.exe from the tryhotme domain into the temp folder under the name Datacollector.exe, the file is then launched using a start-process powershell command and all this activity will be executed under the user oliver.thompson.
 ![splunk8](/static/images/splunk8.png)
@@ -153,24 +160,28 @@ Your job is to investigate this activity and decide whether it should be conside
 
 2. query the ip in the SIEM:
 index=web-alert 171.251.232.40
+```
 | table _time clientip useragent uri_path method status 
 | sort + _time
+```
 
 This returns over 300 events with a User-agent of Hydra a popular tool used by attackers to perform brute force attempts, in this case to the wp-login.php page.
 ![splunk14](/static/images/splunk14.png)
 
 3. query the ip again in the SIEM exlcuding the hydra user-agent to filter down the results to see what else happened:
+```
 index=web-alert 171.251.232.40 useragent!="Mozilla/5.0 (Hydra)" 
 | table  _time clientip useragent uri_path referer referer_domain method status
-
+```
 This returns only 24 events, since the alert was for a web shell this helped narrow down the event field. One event shows a POST request for admin-ajax.php with a refer pointing to theme-editor.php?file=b374k.php, the theme editor should not refrence arbitraty .php files. this suggest the attacker may have uploaded or is interacting with a web shell.
 ![splunk15](/static/images/splunk15.png)
 
 4. Look at logs realted to b374k.php
+```
 index=web-alert 171.251.232.40 b374k.php
 | table _time clientip useragent uri_path referer referer_domain method status
 | sort + _time
-
+```
 ![splunk16](/static/images/splunk16.png)
 Here can be seen the attacker gaining access to the web shell with the GET command and then using POST for command execution
 
