@@ -125,10 +125,10 @@ Since there is no key for this event I had to just use ausearch -i | grep naabu 
 ![linuxlogging9](/static/images/linxulogging9.png)
 
 ## Conclusion
-In conclusion the use of Linux is growing consistenyl thus making it a growing target for attacks and bad actors making understanding logs and how to find them an essential tool to trace and investigate a variety of threats.
+In conclusion the use of Linux is growing consistenly thus making it a growing target for attacks and bad actors making understanding logs and how to find them an essential tool to trace and investigate a variety of threats.
 
 Key Takeaways:
-> Linux logging can be chaotic, but it often stores enough deetails to detect a threat
+> Linux logging can be chaotic, but it often stores enough details to detect a threat
 
 > Logs are kept in /var/log/ folder
 

@@ -4,7 +4,7 @@ platform: TryHackMe
 difficulty: easy
 date: 2026-08-01
 tags: [Threat analysis, Challenge]
-summary: Extract insight from a set of flagged artefacts, and distil the information into usable thrat intel.
+summary: Extract insight from a set of flagged artefacts, and distil the information into usable threat intel.
 ---
 
 # Invite only

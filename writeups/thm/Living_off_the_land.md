@@ -4,7 +4,7 @@ platform: TryHackMe
 difficulty: easy
 date: 2026-07-30
 tags: [Malware Concepts, LOTL]
-summary: A write up of how to detect and analyse living of the land attcks
+summary: A write up of how to detect and analyse living off the land attacks
 ---
 
 # Living off the land
@@ -21,19 +21,19 @@ Common tools use:
 - Rundll32: used to invoke DLL exports or trigger URL handlers
 - Scheduled tasks (schtasks): used to run code at logon or on a schedule for persistence
 
-Living off the land methods are not exclusive to windows either and Linux is also still targeted with attacks. Public collections document common patterns for both platforms, LOLBAS for windos and GFTObin for Unix. Knowing which tools are most likely to be misused and the goals behind those uses helps defenders tune logging, capture full command lines and process trees and prioritise alerts.
+Living off the land methods are not exclusive to windows either and Linux is also still targeted with attacks. Public collections document common patterns for both platforms, LOLBAS for windows and GFTObin for Unix. Knowing which tools are most likely to be misused and the goals behind those uses helps defenders tune logging, capture full command lines and process trees and prioritise alerts.
 
 Measured to reduce attack surface and improve response:
 - Apply layered defensive controls that combine endpoint, network and identity protections (defence in depth)
 - Implement application control policies such as AppLocker or Windows Defender Application control to define which scripts and executables are permitted to run
 - Enforce/use the principles of least privilege by ensuring only admins can access or use system management utilities
-- Configure network rules and DNS filters to block or redirect connections to domains and IPs known for malcious activity
+- Configure network rules and DNS filters to block or redirect connections to domains and IPs known for malicious activity
 - Maintain clear containment playbooks that outline the steps for isolating compromised systems and revoking exposed credentials
 - Regularly review and update access perms, logging coverage, and control lists to adapt to new attack methods.
 
 ## Real world examples
 
-- APT29 (Nobelium) - Powershell and WMI for Peristence and Execution
+- APT29 (Nobelium) - Powershell and WMI for Persistence and Execution
 Used fileless techniques that combine PowerShell with WMI event subscriptions to persist and execute code without dropping obvious binaries on disk. A WMI event subscription was created to run a PowerShell payload stored in WMI. The payload was read, decrypted and executed from WMI properties leaving minimal on-disk artefacts (T1546.003)
 
 - BlackCat (ALPHV) Ransomware - Built-in tools for Lateral movement

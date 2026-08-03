@@ -3,7 +3,7 @@ title: Linux threat detection three
 platform: TryHackMe
 difficulty: Medium
 date: 2026-07-29
-tags: [Linux Security, logs, peristence, escalation]
+tags: [Linux Security, logs, persistence, escalation]
 summary: A write up of the last stages of an advanced attack on Linux machines and how to detect them
 ---
 

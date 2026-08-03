@@ -1,5 +1,5 @@
 ---
-title: Windows theat detection - Persistence and C2
+title: Windows threat detection - Persistence and C2
 platform: TryHackMe
 difficulty: Medium
 date: 2026-07-25

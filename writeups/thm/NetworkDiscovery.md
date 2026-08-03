@@ -4,7 +4,7 @@ platform: TryHackMe
 difficulty: Medium
 date: 2026-07-19
 tags: [Network Security]
-summary: How attakers discover assets in a network and how to defend from it 
+summary: How attackers discover assets in a network and how to defend from it 
 ---
 
 # Network discovery
