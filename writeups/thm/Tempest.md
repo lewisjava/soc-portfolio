@@ -9,8 +9,6 @@ summary: You are tasked to conduct an investigation from a workstation affected 
 
 # Tempest
 
-Write your content in standard markdown below. Everything here gets rendered.
-
 Scenario:
 Tempest Incident
 
@@ -92,7 +90,7 @@ Using brim I put the two different malicious urls in and had a look through what
 ![tempest11](/static/images/tempest11.png)
 
 **What is the encoding used by the attacker on the c2 connection**
-The next step here was to go to wireshark and filter for both the compromised host IP and the IP for th domain cyberresolver.xyz and look at the conversations. By doing this I can see there is some base64 encoding in some of the GET requests.
+The next step here was to go to wireshark and filter for both the compromised host IP and the IP for the domain resolvecyber.xyz and look at the conversations. By doing this I can see there is some base64 encoding in some of the GET requests.
 ![tempest12](/static/images/tempest12.png)
 
 **The malicious c2 binary sends a payload using a parameter that contains the executed command results, what is the parameter used by the binary**
@@ -206,10 +204,44 @@ net localgroup administrators /add shion
 ![tempest30](/static/images/tempest30.png)
 
 **Based on windows event logs, the account was successfully added to a sensitive group, what is the event ID that indicates the addition to a sensitive local group**
-4720 is the windows ID for members being added to a security-enabled local group
+4732 is the windows ID for members being added to a security-enabled local group
 
 **After account creation, the attacker executed a technique to establish persistence administrative access. what is the command executed by the attacker to achieve this**
-It is likely the attacker will use sc.exe to create a scheduled task but simply searching final.exe since that is the binary they want to use for persistence I can find any commands ran against it where I find that it was added to sc.exe to auto start. this task was created at 17:26:29 ![tempest32](/static/images/tempest31.png)
+It is likely the attacker will use sc.exe to create Windows service persistence but simply searching final.exe since that is the binary they want to use for persistence I can find any commands ran against it where I find that it was added to sc.exe to auto start. this task was created at 17:26:29 ![tempest32](/static/images/tempest31.png)
+
+## Attack Chain Summary
+
+A stage-by-stage mapping of the intrusion to MITRE ATT&CK, from initial access through full compromise.
+
+| Phase | MITRE ATT&CK Technique | Observed Activity | Key Artifact / IOC |
+|---|---|---|---|
+| **Initial Access** | T1566 – Phishing | `benimaru` downloaded a weaponised Word document via `chrome.exe` | `free_magicules.doc` |
+| **Execution** | T1204.002 – User Execution: Malicious File | User opened the document in `WINWORD.EXE` | PID **496** |
+| **Execution** | T1203 – Exploitation for Client Execution / T1218 – System Binary Proxy Execution (`msdt.exe`) | **Follina** — the document abused the MS Diagnostic Tool to run attacker code | **CVE-2022-30190** |
+| **Execution / Defense Evasion** | T1059.001 – PowerShell / T1027 – Obfuscated Files or Information | Base64-encoded PowerShell payload spawned as a child of Word | Decoded payload (CyberChef) |
+| **Command & Control** | T1105 – Ingress Tool Transfer | Payload retrieved the second-stage document from the staging host | `http://phishteam.xyz/02dcf07/index.html` |
+| **Persistence** | T1547.001 – Boot/Logon Autostart Execution (Startup) | Payload wrote a logon-triggered shortcut | `update.lnk` |
+| **Command & Control** | T1105 – Ingress Tool Transfer | On logon, `explorer.exe` (PID 5784) used `certutil` to pull the stage-2 binary | `first.exe` → `C:\Users\Public\Downloads\` |
+| **Command & Control** | T1071.001 – Web Protocols / T1132.001 – Standard Encoding | Nim-compiled beacon established C2 over HTTP with base64-encoded tasking | `resolvecyber.xyz:80`, `GET /9ab62b5?q=<base64>` |
+| **Exfiltration** | T1041 – Exfiltration Over C2 Channel | Command output returned to the C2 in the `q=` URL parameter | `q=` parameter |
+| **Discovery** | T1083 – File and Directory Discovery / T1552.001 – Credentials In Files | Attacker enumerated the filesystem and recovered a password from a sensitive file | Password recovered from decoded commands |
+| **Discovery** | T1049 – System Network Connections Discovery | Enumerated listening ports for a viable remote-shell service | Listening port identified |
+| **Lateral Movement (setup)** | T1572 – Protocol Tunneling / T1090 – Proxy | Established a reverse SOCKS proxy to reach internal services | `ch.exe` (**Chisel**) |
+| **Lateral Movement** | T1078 – Valid Accounts / T1021.006 – Windows Remote Management | Authenticated over WinRM using harvested credentials | `wsmprovhost.exe` |
+| **Privilege Escalation** | T1068 – Exploitation for Privilege Escalation / T1134.001 – Token Impersonation/Theft | Ran PrintSpoofer, abusing **SeImpersonatePrivilege** via the Print Spooler | `spf.exe` (**PrintSpoofer**) |
+| **Command & Control** | T1071.001 – Web Protocols | SYSTEM-level beacon established on a new port | `final.exe` → `resolvecyber.xyz` (`161.71.222.162:8080`) |
+| **Persistence / Account Manipulation** | T1136.001 – Create Account: Local / T1098 – Account Manipulation | Created two local accounts; added one to the local **Administrators** group | Users `shion`, `shuna` |
+| **Persistence** | T1543.003 – Create or Modify System Process: Windows Service | Registered the C2 binary as an auto-start **service** via `sc.exe` | `final.exe` set to auto-start |
+
+### Key detection events (Windows Security log)
+
+| Activity | Event ID |
+|---|---|
+| A user account was created (`shion`, `shuna`) | **4720** |
+| A member was added to a security-enabled **local** group (Administrators) | **4732** |
+
+---
+
 ---
 
 - **Tempest**
