@@ -7,7 +7,7 @@ summary: Quick reference for the ports every SOC analyst should know cold.
 
 # Common Ports Cheatsheet
 
-> Sample note — replace with your own.
+> List of most common ports.
 
 ## Must-know ports
 
