@@ -181,7 +181,7 @@ def reading_time(content):
 
 # ── FRONTMATTER & LOADING ─────────────────────────────────────────────────────
 def parse_frontmatter(text):
-    meta = {'title': 'Untitled', 'date': '', 'tags': [], 'difficulty': '', 'platform': '', 'summary': '', 'status': '', 'org': ''}
+    meta = {'title': 'Untitled', 'date': '', 'tags': [], 'tech': [], 'difficulty': '', 'platform': '', 'summary': '', 'status': '', 'org': '', 'github': ''}
     if not text.startswith('---'):
         return meta, text
     parts = text.split('---', 2)
@@ -195,8 +195,8 @@ def parse_frontmatter(text):
         key, _, val = line.partition(':')
         key = key.strip()
         val = val.strip()
-        if key == 'tags':
-            meta['tags'] = [t.strip().strip('"\'') for t in val.strip('[]').split(',') if t.strip()]
+        if key in ('tags', 'tech'):
+    meta[key] = [t.strip().strip('"\'') for t in val.strip('[]').split(',') if t.strip()]
         else:
             meta[key] = val.strip('"\'')
     return meta, content
@@ -258,6 +258,10 @@ def all_documents():
         d['url'] = url_for('tool_detail', slug=d['slug'])
         d['kind'] = 'Tool / Cheatsheet'
         docs.append(d)
+    for d in load_section('projects'):
+    d['url'] = url_for('project_detail', slug=d['slug'])
+    d['kind'] = 'Project'
+    docs.append(d)
     return docs
 
 
@@ -368,6 +372,18 @@ def certs():
     items = load_section('certs')
     return render_template('certs.html', site=SITE, items=items)
 
+@app.route('/projects/')
+def projects():
+    items = load_section('projects')
+    return render_template('projects.html', site=SITE, items=items)
+
+@app.route('/projects/<slug>/')
+def project_detail(slug):
+    path = CONTENT_ROOT / 'projects' / f'{slug}.md'
+    if not path.exists():
+        abort(404)
+    doc = load_md(path)
+    return render_template('article.html', site=SITE, doc=doc, back_url=url_for('projects'), back_label='← Projects')
 
 @app.route('/search/')
 def search():
