@@ -2,7 +2,7 @@
 title: Boogeyman three
 platform: TryHackMe
 difficulty: Medium
-date: 2026-008-07
+date: 2026-08-07
 tags: [Triage, SIEM, challenge]
 summary: The boogeyman emerges from the darkness again.
 ---
