@@ -25,7 +25,6 @@ NOTE_CATEGORIES = {
     'detection-monitoring': ('Detection & Monitoring', '#4ade80'),
     'threat-intel':         ('Threat Intelligence', '#fb923c'),
     'ir-forensics':         ('IR & Forensics', '#f472b6'),
-    'frameworks':           ('frameworks', '#c4b5fd'),
 }
 
 WRITEUP_PLATFORMS = {
@@ -142,15 +141,9 @@ def split_table_row(line):
 def heading_slug(text):
     return re.sub(r'[^\w\s-]', '', text.lower()).strip().replace(' ', '-')
 
-def inline(text):
-    # Protect inline code spans from bold/italic/highlight/link processing
-    # by extracting them first and restoring untouched at the very end.
-    code_spans = []
-    def stash_code(m):
-        code_spans.append(m.group(1))
-        return f'\x00CODE{len(code_spans) - 1}\x00'
-    text = re.sub(r'`([^`]+)`', stash_code, text)
 
+def inline(text):
+    text = re.sub(r'`([^`]+)`', r'<code>\1</code>', text)
     text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
     text = re.sub(r'__(.+?)__', r'<strong>\1</strong>', text)
     text = re.sub(r'\*(.+?)\*', r'<em>\1</em>', text)
@@ -158,13 +151,8 @@ def inline(text):
     text = re.sub(r'!\[([^\]]*)\]\(([^)]+)\)', r'<img src="\2" alt="\1">', text)
     text = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2" target="_blank" rel="noopener">\1</a>', text)
     text = re.sub(r'==(.+?)==', r'<mark>\1</mark>', text)
-
-    def restore_code(m):
-        idx = int(m.group(1))
-        code = code_spans[idx].replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-        return f'<code>{code}</code>'
-    text = re.sub(r'\x00CODE(\d+)\x00', restore_code, text)
     return text
+
 
 def extract_toc(content):
     """Extract h2 headings for a table of contents. Only shown if 3+ headings."""
@@ -181,7 +169,7 @@ def reading_time(content):
 
 # ── FRONTMATTER & LOADING ─────────────────────────────────────────────────────
 def parse_frontmatter(text):
-    meta = {'title': 'Untitled', 'date': '', 'tags': [], 'difficulty': '', 'platform': '', 'summary': '', 'status': '', 'org': ''}
+    meta = {'title': 'Untitled', 'date': '', 'tags': [], 'tech': [], 'difficulty': '', 'platform': '', 'summary': '', 'status': '', 'org': '', 'github': ''}
     if not text.startswith('---'):
         return meta, text
     parts = text.split('---', 2)
@@ -195,8 +183,8 @@ def parse_frontmatter(text):
         key, _, val = line.partition(':')
         key = key.strip()
         val = val.strip()
-        if key == 'tags':
-            meta['tags'] = [t.strip().strip('"\'') for t in val.strip('[]').split(',') if t.strip()]
+        if key in ('tags', 'tech'):
+            meta[key] = [t.strip().strip('"\'') for t in val.strip('[]').split(',') if t.strip()]
         else:
             meta[key] = val.strip('"\'')
     return meta, content
@@ -258,6 +246,10 @@ def all_documents():
         d['url'] = url_for('tool_detail', slug=d['slug'])
         d['kind'] = 'Tool / Cheatsheet'
         docs.append(d)
+    for d in load_section('projects'):
+        d['url'] = url_for('project_detail', slug=d['slug'])
+        d['kind'] = 'Project'
+        docs.append(d)
     return docs
 
 
@@ -281,14 +273,17 @@ def index():
     certs = load_section('certs')
     tools_count = len(load_section('tools'))
     notes_count = len(recent_notes)
+    projects = load_section('projects')
 
     return render_template('index.html',
         site=SITE,
         recent_writeups=recent_writeups[:6],
         recent_notes=recent_notes[:5],
+        recent_projects=projects[:3],
         recent_ctf=recent_ctf[:4],
         certs=certs,
         total_writeups=len(recent_writeups),
+        total_projects=len(projects),
         total_ctf=len(recent_ctf),
         notes_count=notes_count,
         tools_count=tools_count,
@@ -367,6 +362,21 @@ def tool_detail(slug):
 def certs():
     items = load_section('certs')
     return render_template('certs.html', site=SITE, items=items)
+
+
+@app.route('/projects/')
+def projects():
+    items = load_section('projects')
+    return render_template('projects.html', site=SITE, items=items)
+
+
+@app.route('/projects/<slug>/')
+def project_detail(slug):
+    path = CONTENT_ROOT / 'projects' / f'{slug}.md'
+    if not path.exists():
+        abort(404)
+    doc = load_md(path)
+    return render_template('article.html', site=SITE, doc=doc, back_url=url_for('projects'), back_label='← Projects')
 
 
 @app.route('/search/')

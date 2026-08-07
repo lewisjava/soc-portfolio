@@ -8,11 +8,17 @@
     <h1 class="article-title">{{ doc.title }}</h1>
     <div class="article-meta">
       {% if doc.platform %}<span class="tag tag-cyan">{{ doc.platform }}</span>{% endif %}
+      {% if doc.status == 'complete' %}<span class="tag" style="color:var(--green);border-color:var(--green);background:rgba(74,222,128,0.08)">✓ COMPLETE</span>
+      {% elif doc.status == 'in-progress' %}<span class="tag" style="color:var(--amber);border-color:var(--amber);background:rgba(251,191,36,0.08)">◷ IN PROGRESS</span>
+      {% elif doc.status == 'planned' %}<span class="tag tag-default">○ PLANNED</span>
+      {% endif %}
       {{ difficulty_tag(doc.difficulty) }}
       {{ tags(doc.tags) }}
+      {% if doc.tech %}{{ tags(doc.tech) }}{% endif %}
       <span class="article-date" style="margin-left:auto">{{ doc.reading_time }} min read{% if doc.date %} · {{ doc.date }}{% endif %}</span>
     </div>
     {% if doc.summary %}<p class="article-summary">{{ doc.summary }}</p>{% endif %}
+    {% if doc.github %}<a href="{{ doc.github }}" target="_blank" rel="noopener" class="tag tag-cyan" style="display:inline-block;margin-top:0.6rem">↗ View on GitHub</a>{% endif %}
   </div>
 
   {% if doc.toc %}

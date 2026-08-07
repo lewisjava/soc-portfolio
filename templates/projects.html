@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% from "_macros.html" import tags %}
+{% block title %}Projects · {{ site.name }}{% endblock %}
+{% block content %}
+<div class="section-header" style="margin-top:0"><span class="section-title">// Projects</span></div>
+{% if items %}
+<div class="card-grid">
+  {% for doc in items %}
+  <div class="card" style="border-top:2px solid {% if doc.status == 'complete' %}var(--green){% elif doc.status == 'in-progress' %}var(--amber){% else %}var(--border2){% endif %}">
+    <div class="card-title"><a href="{{ url_for('project_detail', slug=doc.slug) }}">{{ doc.title }}</a></div>
+    {% if doc.summary %}<div class="card-summary">{{ doc.summary }}</div>{% endif %}
+    <div class="card-meta">
+      {% if doc.status == 'complete' %}<span class="tag" style="color:var(--green);border-color:var(--green);background:rgba(74,222,128,0.08)">✓ COMPLETE</span>
+      {% elif doc.status == 'in-progress' %}<span class="tag" style="color:var(--amber);border-color:var(--amber);background:rgba(251,191,36,0.08)">◷ IN PROGRESS</span>
+      {% elif doc.status == 'planned' %}<span class="tag tag-default">○ PLANNED</span>
+      {% endif %}
+    </div>
+    {% if doc.tech %}<div class="card-meta">{{ tags(doc.tech) }}</div>{% endif %}
+    <div class="card-meta">
+      {% if doc.date %}<span class="card-date">{{ doc.date }}</span>{% endif %}
+      {% if doc.github %}<a href="{{ doc.github }}" target="_blank" rel="noopener" class="section-link" style="margin-left:auto">↗ GitHub</a>{% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">No projects yet. Add markdown files to <code>projects/</code> — home lab builds, SIEM deployments, honeypots, custom Sigma rules, and other standalone technical work.</div>
+{% endif %}
+{% endblock %}

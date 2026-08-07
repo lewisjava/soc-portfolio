@@ -14,12 +14,36 @@
 </div>
 
 <div class="stat-strip">
+  <div class="stat-card"><div class="stat-val">{{ total_projects }}</div><div class="stat-lbl">Projects</div></div>
   <div class="stat-card"><div class="stat-val">{{ total_writeups }}</div><div class="stat-lbl">Write-ups</div></div>
   <div class="stat-card"><div class="stat-val">{{ notes_count }}</div><div class="stat-lbl">Notes</div></div>
   <div class="stat-card"><div class="stat-val">{{ tools_count }}</div><div class="stat-lbl">Cheatsheets</div></div>
   <div class="stat-card"><div class="stat-val">{{ total_ctf }}</div><div class="stat-lbl">CTF Solved</div></div>
   <div class="stat-card"><div class="stat-val">{{ certs|length }}</div><div class="stat-lbl">Certifications</div></div>
 </div>
+
+<div class="section-header" style="margin-top:0">
+  <span class="section-title">// Projects</span>
+  <a href="{{ url_for('projects') }}" class="section-link">View all →</a>
+</div>
+{% if recent_projects %}
+<div class="card-grid">
+  {% for doc in recent_projects %}
+  <div class="card" style="border-top:2px solid {% if doc.status == 'complete' %}var(--green){% elif doc.status == 'in-progress' %}var(--amber){% else %}var(--border2){% endif %}">
+    <div class="card-title"><a href="{{ url_for('project_detail', slug=doc.slug) }}">{{ doc.title }}</a></div>
+    {% if doc.summary %}<div class="card-summary">{{ doc.summary }}</div>{% endif %}
+    <div class="card-meta">
+      {% if doc.status == 'complete' %}<span class="tag" style="color:var(--green);border-color:var(--green);background:rgba(74,222,128,0.08)">✓ COMPLETE</span>
+      {% elif doc.status == 'in-progress' %}<span class="tag" style="color:var(--amber);border-color:var(--amber);background:rgba(251,191,36,0.08)">◷ IN PROGRESS</span>
+      {% endif %}
+      {% if doc.date %}<span class="card-date" style="margin-left:auto">{{ doc.date }}</span>{% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">No projects yet. Add markdown files to <code>projects/</code> — home lab builds, SIEM deployments, honeypots, custom detection rules.</div>
+{% endif %}
 
 <div class="section-header">
   <span class="section-title">// Recent write-ups</span>
