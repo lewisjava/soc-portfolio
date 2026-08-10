@@ -1,5 +1,5 @@
 ---
-title: Boogeyman 1
+title: Boogeyman one
 platform: TryHackMe
 difficulty: Medium
 date: 2026-08-05
@@ -106,7 +106,7 @@ After entering the masterkey the file opens and displays the credit card number
 
 ---
 
-- **BoogeyMan 1**
+- **BoogeyMan one**
 - **TryHackMe** 
 - **Medium** 
 - **2026-08-05**
