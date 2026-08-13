@@ -1,4 +1,4 @@
----
+o---
 title: Enterprise Security Homelab
 status: in-progress
 date: 2026-08-05
@@ -128,7 +128,30 @@ Next I installed AtomicRedTeam and set up a snapshot to rollback to after every 
 ![homelab23](/static/images/homelab23.png)
 
 Next step is to run the atomic red team test command and check to see if it logs on wazuh!
-![homelab24](/static.images/homelab24.png)
+![homelab24](/static/images/homelab24.png)
+
+### Helpdesk
+The next thing I installed a helpdesk machine to communicate with the endpoint. Using another Ubuntu server I pointed it's DNS to the DC to resolve AD names, downloaded the LAMP stack (Linux, Apache, MySQL, and PHP).
+![helpdesk1](/static/images/helpdesk1.png)
+
+Confirmation Apache is serving PHP properly via endpoint browser. info.php will be removed after since it exposes environment detail
+![helpdesk2](/static/images/helpdesk2.png)
+
+Database layer:
+![helpdesk3](/static/images/helpdesk3.png)
+
+Final install with osticket displayed on endpoint
+![helpdesk4](/static/images/helpdesk4.png)
+
+Agent login
+![helpdesk5](/static/images/helpdesk5.png)
+
+Created departments with relevant Help Topics
+![helpdesk6](/static/images/helpdesk6.png)
+
+Ticket created and generated on agent side
+![helpdesk7](/static/images/helpdesk7.png)
+
 
 
 ## Detections / results

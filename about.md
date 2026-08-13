@@ -4,7 +4,7 @@ title: About
 
 ## Who I am
 
-I'm transitioning into cybersecurity with a focus on becoming a **Tier 1 SOC Analyst**. This site documents my hands-on learning — every lab I complete, every concept I study, and every CTF I work through.
+I'm Lewis and I am transitioning into IT and Security. This site documents my hands-on learning — every lab I complete, every concept I study, and every CTF I work through.
 
 ## What you'll find here
 
