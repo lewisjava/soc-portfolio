@@ -1,6 +1,6 @@
 ---
 title: Access to Higher Education Diploma — Computer Science
-org: AIM Qualifications and Assessment Group · Level 3
+org: AIM Qualifications and Assessment Group · Level 3 - Middlesbrough college
 status: passed
 date: 2023
 summary: Level 3 qualification covering computer systems, cyber security, databases, computer architecture, programming, systems analysis, and web development.
