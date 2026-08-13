@@ -3,7 +3,7 @@ title: Enterprise Security Homelab
 status: in-progress
 date: 2026-08-05
 tags: [siem, home-lab, Wazuh]
-tech: [Security Onion, Sysmon, VirtualBox, Atomic red team]
+tech: [Wazuh, Sysmon, VirtualBox, Atomic red team]
 github: https://github.com/LewisJava/home-siem
 summary: A virtualised enterprise environment built to simulate IT infrastructure, security monitoring and defensive operations, progressing from Active Directory administration to SIEM detection engineering and attack simulation.
 
@@ -13,7 +13,7 @@ summary: A virtualised enterprise environment built to simulate IT infrastructur
 
 ## Overview
 
-What is this project, and why did you build it? What does it demonstrate about your skills?
+This is a dual-use homelab developed to simulate an enterprise network.
 
 ## Architecture
 ENTERPRISE SECURITY HOMELAB
@@ -27,13 +27,33 @@ The second ubunutu server hosts osTicket for dual use purposes, firstly it allow
 │         ARCHITECTURE DIAGRAM          │
 └───────────────────────────────────────┘
 
-Environment
-├── Ubuntu / osTicket
-├── Windows Server 2022 / DC01
-├── Windows Endpoint
-├── Ubuntu / Wazuh
-├── Kali Linux
-└── VirtualBox Host-only LAN
+DC01
+Windows Server 2022
+├── AD DS
+├── DNS
+└── GPO
+
+APP01
+Windows Server 2022
+├── IIS
+└── osTicket
+
+WAZUH01
+Ubuntu Server
+└── Wazuh
+
+WIN01
+Windows 11
+└── Sysmon + Wazuh Agent
+
+KALI01
+Kali Linux
+└── Attack simulation
+
+TBA:
+FW01
+pfSense
+└── Firewall / routing
 
 Objectives:
 - Build a realistic Windows enterprise environment
@@ -178,14 +198,11 @@ From start to finish I learned a lot.
 
 1. Installing and configuring the endpoints, both the work station and DC were rather easy to set up and configure as there is plenty of offical Microsoft documentation to follow.
 
-2. Setting up the network was the next step, manually assigning the IPv4 address to the machines and the subnet mask so that they can communicate to each other across a host only network. Later on I stumbled into an issue when I tried to download the wazuh packages as it was failing even though I could ping the DNS forwarder and nslookup the packages from the endpoints, it was until trying many fixes that I realised the NAT had not been set up on both machines so they could not download it.
+2. Setting up the network was the next step, manually assigning the IPv4 address to the machines and the subnet mask so that they can communicate to each other across a host only network. Later on I stumbled into an issue when I tried to download the wazuh packages as it was failing even though I could ping the DNS forwarder and nslookup the packages from the endpoints, it was until I started troubleshooting that I realised the NAT had not been set up on both machines so they could not download it.
 
 3. After getting the endpoints added to the wazuh manager I had a real issue when I rolled back the Wazuh server where the keys on the manager and keys on the endpoints did not match so a fresh install had to be done on both. Troubleshooting issues like this was a task I seriously underestimated to be challening when setting things up, one such issue was a wazuh agent (the workstation endpoint) would not fail to start so I had to get the -Tail of the ossec.log to see why, it turns out it failed to start due to an error reading the xml file as I had faile to close a line properly using <\>.
 
 4. Getting the security system up and running was not a hassle, getting wazuh set up and the agents deployed was rather easy following instruction, documentation and resources.
 ---
 
-- **in-progress** — `complete`, `in-progress`, or `planned`. Shows as a coloured badge.
-- **Wazuh, windows server 2022, VirtualBox** — comma-separated list in brackets, e.g. `[Splunk, Sysmon, VirtualBox]`. Shows as tags, separate from `tags`.
-- **github** — link to the project's repo, if you have one. Shows as a button on the project page.
-- Everything else (title, date, tags, summary) works the same as write-ups and notes.
+- **in-progress** — `complete`, `in-progress`, or `planned`.
