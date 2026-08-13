@@ -18,13 +18,17 @@ What is this project, and why did you build it? What does it demonstrate about y
 ## Architecture
 ENTERPRISE SECURITY HOMELAB
 
-[Short description]
-
+My simulated Enterprise homelab consists of one workstation/endpoint using windows 11 OS for user logins. 
+A windows server 2022 which is the DC and DNS for the LAN and Active Directory ingtegration, here is where the OUs, GPOs and Security policies are handled for the windows 11 endpoint. 
+Two ubuntu servers
+One which hosts Wazuh the enterprise SIEM it ingests logs from the endpoint and DC where I can see network, auth, syslog and other logs from these two sources and generate security alerts based on the rules I have written 
+The second ubunutu server hosts osTicket for dual use purposes, firstly it allows users from the endpoint to generate tickets for IT support to deal with issues such as logins, passwords, etc, where agents can handle tickets and deal with issues and complete tickets. Secondly it acts as a ticket system for a SOC analyst by using a Python integration script on the Wazuh manager alerts from self written rules will be sent to osTicket via HTTP POST requests to the osTicket API to generate tickets for SOC analysts to handle and triage.
 ┌───────────────────────────────────────┐
 │         ARCHITECTURE DIAGRAM          │
 └───────────────────────────────────────┘
 
 Environment
+├── Ubuntu / osTicket
 ├── Windows Server 2022 / DC01
 ├── Windows Endpoint
 ├── Ubuntu / Wazuh
