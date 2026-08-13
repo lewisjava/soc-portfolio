@@ -7,8 +7,8 @@ app = Flask(__name__)
 
 # ── CONFIG ────────────────────────────────────────────────────────────────────
 SITE = {
-    'name': 'SOC Portfolio',
-    'tagline': 'Tier 1 SOC Analyst in Training',
+    'name': 'IT & Security Portfolio',
+    'tagline': 'IT & Security Analyst in Training',
     'github': 'https://github.com/LewisJava',
     'tryhackme': 'https://tryhackme.com/p/LewisJava',
     'email': 'lewis2101@proton.me',
