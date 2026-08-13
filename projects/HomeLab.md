@@ -1,4 +1,4 @@
-o---
+---
 title: Enterprise Security Homelab
 status: in-progress
 date: 2026-08-05
