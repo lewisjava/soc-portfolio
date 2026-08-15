@@ -25,10 +25,25 @@ After this I respond to the user, give them a temporary log in password after re
 
 After confirming the user is logged in successfully and has regained access to their account I can document the incident and close the ticket.
 ![homelabticket7](/static/images/homelabticket7.png)
-![homelabticket8](/static/images/homelabticket8.pnh)
+![homelabticket8](/static/images/homelabticket8.png)
 
 
 ## T-1002 - New starter setup / provisioning
+New starter requiring an account set up and adding to the right OU, Security groups and relevant GPOs applied.
+
+Ticket from line manager
+![homelabticket9](/static/images/homelabticket9.png)
+
+User is created and then added to their relevant security group
+![Homelabticket10](/static/images/homelabticket10.png)
+
+Login to the new users account and ensure everything is set up properly and that the GPO applies.
+![homelabticket11](/static/images/homelabticket11.png)
+
+New user account is set up and ready.
+
+## T-1003 VPN won't connect
+
 ---
 
 - **osTicket scenarios**
